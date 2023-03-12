@@ -2,7 +2,7 @@
 
 阅读Naive UI Admin项目的源码，然后自己使用Vue（非Vite+TypeScript）实现了一遍项目。
 
-项目如何一步步实现见博客：<a href="https://sx-code.github.io/wiki/adminpro/01_introduce/index.html" target="_blank">https://sx-code.github.io/wiki/adminpro/01_introduce/index.html</a>
+项目如何一步步实现见博客：<a href="https://sx-code.github.io/wiki/adminpro/01_introduce/index.html" target="_blank">AdminPro JS版搭建流程</a>
 
 ## Project setup
 ```
