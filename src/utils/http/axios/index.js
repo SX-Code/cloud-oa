@@ -211,7 +211,7 @@ const transform = {
         $message.error('接口请求超时，请刷新页面重试!');
         return;
       }
-      if (err && err.include('Network Error')) {
+      if (err && err.includes('Network Error')) {
         $dialog.info({
           title: '网络异常',
           content: '请检查您的网络连接是否正常',

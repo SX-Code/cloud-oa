@@ -3,7 +3,7 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router, { setupRouter } from './router';
 import { setupStore } from './store';
-import { setupNaive } from './plugins';
+import { setupNaive, setupNaiveDiscreteApi } from './plugins';
 
 async function bootstrap() {
   const app = createApp(App);
@@ -13,6 +13,9 @@ async function bootstrap() {
 
   // 注册全局常用的 naive-ui 组件
   setupNaive(app);
+
+  // 挂载 naive-ui 脱离上下文的 Api
+  setupNaiveDiscreteApi();
 
   // 挂载路由
   setupRouter(app);
