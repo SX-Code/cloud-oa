@@ -1,5 +1,15 @@
 <template>
   <n-card :bordered="false" class="proCard">
+    <BasicForm
+      :gridProps="{ cols: 1 }"
+      :schemas="schemas"
+      :showAdvancedButton="false"
+      @submit="handleSubmit"
+      @reset="handleReset"
+    >
+    </BasicForm>
+  </n-card>
+  <n-card :bordered="false" class="proCard table">
     <BasicTable
       :columns="columns"
       :request="loadDataTable"
@@ -15,13 +25,27 @@
 <script>
 import { defineComponent, h, reactive, ref } from 'vue';
 import { BasicTable, TableAction } from '@/components/Table';
+import { BasicForm } from '@/components/Form';
 import { getPageList } from '@/api/system/role';
 import { columns } from './columns';
 import { DeleteOutlined, EditOutlined } from '@vicons/antd';
 import { useDialog, useMessage } from 'naive-ui';
 
+const schemas = [
+  {
+    field: 'roleNme',
+    component: 'NInput',
+    label: '角色名称',
+    labelMessge: '筛选角色名称',
+    componentProps: {
+      placeholder: '请输入角色名称',
+    },
+    rules: [{ required: true, message: '请输入姓名', trigger: ['blur'] }],
+  },
+];
+
 export default defineComponent({
-  components: { BasicTable },
+  components: { BasicTable, BasicForm },
   setup() {
     const message = useMessage();
     const dialog = useDialog();
@@ -29,6 +53,8 @@ export default defineComponent({
     const params = reactive({
       roleName: '',
     });
+
+    console.log(actionRef);
 
     const actionColumn = reactive({
       width: 150,
@@ -99,12 +125,23 @@ export default defineComponent({
       console.log(record);
       message.success('您点击了编辑按钮');
     }
+
+    function handleSubmit(values) {
+      console.log(values);
+    }
+
+    function handleReset(values) {
+      console.log(values);
+    }
     return {
       columns,
+      schemas,
       loadDataTable,
       onCheckedRow,
       actionColumn,
       actionRef,
+      handleSubmit,
+      handleReset,
     };
   },
 });

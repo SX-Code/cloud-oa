@@ -37,6 +37,8 @@ const naive = NaiveUI.create({
     NaiveUI.NSwitch,
     NaiveUI.NDivider,
     NaiveUI.NPopover,
+    NaiveUI.NGrid,
+    NaiveUI.NGi,
   ],
 });
 export function setupNaive(app) {

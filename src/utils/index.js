@@ -1,6 +1,6 @@
 import { PageEnum } from '@/enums/pageEnum';
 import { NIcon } from 'naive-ui';
-import { h } from 'vue';
+import { h, unref } from 'vue';
 import { isObject } from './is';
 
 /**
@@ -89,4 +89,15 @@ export function deepMerge(src = {}, target = {}) {
       : (src[key] = target[key]);
   }
   return src;
+}
+
+// dynamic use hook props
+export function getDynamicProps(props) {
+  const ret = {};
+
+  Object.keys(props).map((key) => {
+    ret[key] = unref(props[key]);
+  });
+
+  return ret;
 }
