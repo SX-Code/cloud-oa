@@ -65,6 +65,7 @@ export function useDataSource(
       const sizeField = APISETTING.sizeField;
       const totalField = APISETTING.totalField;
       const listField = APISETTING.listField;
+      const itemCountField = APISETTING.itemCountField;
       // 分页参数，当前页以及每页数量
       let pageParams = {};
       // 获取分页信息，缺省则赋予1和10
@@ -98,6 +99,8 @@ export function useDataSource(
       const resultTotal = res[totalField] || 0;
       // 从结果中拿到当前页
       const currentPage = res[pageField];
+      // 从结果拿到总数据数
+      const totalData = res[itemCountField];
 
       // 如果数据异常，需获取正确的页码再次执行
       if (resultTotal) {
@@ -120,6 +123,7 @@ export function useDataSource(
       setPagination({
         [pageField]: currentPage,
         [totalField]: resultTotal,
+        [itemCountField]: totalData,
       });
       // 如果传入了page参数，则从opt获取
       if (opt && opt[pageField]) {

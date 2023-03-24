@@ -9,6 +9,8 @@ export default {
       listField: 'records',
       // 接口返回总页数字段名
       totalField: 'pages',
+      // 接口返回总数据个数
+      itemCountField: 'total',
     },
     //默认分页数量
     defaultPageSize: 10,

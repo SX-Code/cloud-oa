@@ -15,7 +15,7 @@ export function usePagination(refProps) {
       return false;
     }
     // 获取接口返回总页数字段名
-    const { totalField } = APISETTING;
+    const { totalField, itemCountField } = APISETTING;
     // 组装分页组件的信息
     return {
       pageSize: DEFAULTPAGESIZE, // 默认每页数量
@@ -25,6 +25,7 @@ export function usePagination(refProps) {
       ...(isBoolean(pagination) ? {} : pagination),
       ...unref(configRef),
       pageCount: unref(configRef)[totalField],
+      itemCount: unref(configRef)[itemCountField],
     };
   });
 

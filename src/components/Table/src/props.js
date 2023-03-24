@@ -51,6 +51,12 @@ export const basicProps = {
     type: Object,
     default: null,
   },
-  canResize: true,
-  resizeHeightOffset: 0,
+  canResize: {
+    type: Boolean,
+    default: true,
+  },
+  resizeHeightOffset: {
+    type: Number,
+    default: 0,
+  },
 };

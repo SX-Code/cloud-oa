@@ -15,12 +15,12 @@ export function getUserInfo() {
 /**
  * @description: 用户登录
  */
-export function login(params) {
+export function login(data) {
   return http.request(
     {
       url: `${prefix}/login`,
       method: 'POST',
-      params,
+      data,
     },
     {
       isTransformResponse: false,
@@ -31,10 +31,10 @@ export function login(params) {
 /**
  * @description: 用户登出
  */
-export function logout(params) {
+export function logout(data) {
   return http.request({
     url: `${prefix}/logout`,
     method: 'POST',
-    params,
+    data,
   });
 }

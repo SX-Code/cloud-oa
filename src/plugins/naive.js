@@ -39,6 +39,7 @@ const naive = NaiveUI.create({
     NaiveUI.NPopover,
     NaiveUI.NGrid,
     NaiveUI.NGi,
+    NaiveUI.NModal,
   ],
 });
 export function setupNaive(app) {

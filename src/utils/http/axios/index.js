@@ -62,10 +62,11 @@ const transform = {
     if (isShowMessage) {
       if (hasSuccess && (successMessageText || isShowSuccessMessage)) {
         // 是否显示自定义信息提示
-        $dialog.success({
-          type: 'success',
-          content: successMessageText || message || '操作成功！',
-        });
+        $message.success(successMessageText || message || '操作成功！');
+        // $dialog.success({
+        //   type: 'success',
+        //   content: successMessageText || message || '操作成功！',
+        // });
       } else if (!hasSuccess && (errorMessageText || isShowErrorMessage)) {
         // 是否显示自定义信息提示
         $message.error(message || errorMessageText || '操作失败！');

@@ -153,7 +153,7 @@ export default defineComponent({
     const columnsList = ref([]);
     const cacheColumnList = ref([]);
     const state = reactive({
-      selection: false,
+      selection: true,
       checkAll: true,
       checkList: [],
       defaultCheckList: [],

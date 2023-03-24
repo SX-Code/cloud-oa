@@ -63,5 +63,5 @@ export function isDevMode() {
  * @example:
  */
 export function isProdMode() {
-  return import.meta.env.NODE_ENV === devMode;
+  return process.env.NODE_ENV === devMode;
 }
