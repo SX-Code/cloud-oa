@@ -40,6 +40,11 @@ const naive = NaiveUI.create({
     NaiveUI.NGrid,
     NaiveUI.NGi,
     NaiveUI.NModal,
+    NaiveUI.NDatePicker,
+    NaiveUI.NTimePicker,
+    NaiveUI.NRadio,
+    NaiveUI.NRadioGroup,
+    NaiveUI.NFormItemGi,
   ],
 });
 export function setupNaive(app) {

@@ -2,7 +2,7 @@ import { storage } from '@/utils/Storage';
 import { defineStore } from 'pinia';
 import { store } from '@/store';
 import { ACCESS_TOKEN, CURRENT_USER } from '../mutation-types';
-import { getUserInfo, login } from '@/api/system/user';
+import { getUserInfo, login } from '@/api/user';
 import { ResultEnum } from '@/enums/httpEnum';
 
 export const useUserStore = defineStore({

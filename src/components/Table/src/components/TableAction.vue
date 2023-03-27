@@ -5,12 +5,22 @@
         v-for="(action, index) in getActions"
         :key="`${index}-${action.lable}`"
       >
-        <n-button v-bind="action" class="mx-2">
-          {{ action.lable }}
+        <n-button v-if="showLabel" v-bind="action" class="mx-2">
+          {{ action.label }}
           <template #icon v-if="action.hasOwnProperty('icon')">
             <n-icon :component="action.icon" />
           </template>
         </n-button>
+        <n-tooltip v-else>
+          <template #trigger>
+            <n-button v-bind="action" class="mx-2">
+              <template #icon v-if="action.hasOwnProperty('icon')">
+                <n-icon :component="action.icon" />
+              </template>
+            </n-button>
+          </template>
+          {{ action.label }}
+        </n-tooltip>
       </template>
       <!-- 下拉菜单情况 -->
       <n-dropdown
@@ -58,6 +68,10 @@ export default defineComponent({
     style: {
       type: String,
       default: 'button',
+    },
+    showLabel: {
+      type: Boolean,
+      default: true,
     },
     select: {
       type: Function,

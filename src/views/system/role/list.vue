@@ -92,7 +92,7 @@ import {
   addRole,
   updateRole,
   batchRemove,
-} from '@/api/system/role';
+} from '@/api/system/sysRole';
 import { columns } from './columns';
 import {
   DeleteOutlined,
@@ -296,7 +296,6 @@ export default defineComponent({
     // 查询重置方法
     function handleReset() {
       Object.assign(params, defalutParams());
-      console.log(params);
       reloadTable();
     }
 

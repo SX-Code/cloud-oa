@@ -75,3 +75,24 @@ export function batchRemove(ids) {
     }
   );
 }
+
+/**
+ * @description: 获取所有角色和当前用户所属角色
+ */
+export function getRoles(adminId) {
+  return http.request({
+    url: `${prefix}/toAssign/${adminId}`,
+    method: 'get',
+  });
+}
+
+/**
+ * @description: 分配角色
+ */
+export function assignRoles(data) {
+  return http.request({
+    url: `${prefix}/doAssign`,
+    method: 'post',
+    data,
+  });
+}

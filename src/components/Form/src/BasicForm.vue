@@ -43,6 +43,20 @@
               </n-space>
             </n-checkbox-group>
           </template>
+          <!--NRadioGroup-->
+          <template v-else-if="schema.component === 'NRadioGroup'">
+            <n-radio-group v-model:value="formModel[schema.field]">
+              <n-space>
+                <n-radio
+                  v-for="item in schema.componentProps.options"
+                  :key="item.value"
+                  :value="item.value"
+                >
+                  {{ item.label }}
+                </n-radio>
+              </n-space>
+            </n-radio-group>
+          </template>
           <!-- 动态渲染表单组件 -->
           <component
             v-else
@@ -73,7 +87,7 @@
           align="center"
           :justify="isInline ? 'end' : 'start'"
           :style="{
-            'margin-left': `${isInline ? 12 : getProps.labelWidth}px }`,
+            'margin-left': `${isInline ? 12 : getProps.labelWidth}px`,
           }"
         >
           <n-button
@@ -302,3 +316,16 @@ export default defineComponent({
   },
 });
 </script>
+<style lang="less" scoped>
+.isFull {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.unfold-icon {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin-left: -3px;
+}
+</style>
