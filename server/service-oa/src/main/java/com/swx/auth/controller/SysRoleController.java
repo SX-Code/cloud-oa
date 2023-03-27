@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.swx.auth.service.SysRoleService;
 import com.swx.common.annotation.ResponseResult;
 import com.swx.common.pojo.BizException;
+import com.swx.model.system.AssignRoleVo;
 import com.swx.model.system.SysRole;
 import com.swx.vo.system.SysRoleQueryVo;
 import com.swx.vo.system.page.CustomPage;
@@ -17,6 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -38,6 +40,19 @@ public class SysRoleController {
         this.sysRoleService = sysRoleService;
     }
 
+    @ApiOperation("获取角色")
+    @GetMapping("/toAssign/{userId}")
+    public Map<String, Object> toAssign(@PathVariable Long userId) {
+        Map<String, Object> map = sysRoleService.findRoleDataByUserId(userId);
+        return map;
+    }
+
+    @ApiOperation("为用户分配角色")
+    @PostMapping("/doAssign")
+    public void doAssign(@RequestBody AssignRoleVo assignRoleVo) {
+        sysRoleService.doAssign(assignRoleVo);
+    }
+
     @ApiOperation("查询所有角色")
     @GetMapping("/findAll")
     public List<SysRole> findAll() {
@@ -54,7 +69,7 @@ public class SysRoleController {
     @ApiOperation("条件分页查询")
     @GetMapping("{page}/{limit}")
     public IPage<SysRole> pageQueryRole(@PathVariable Long page,
-                                       @PathVariable Long limit,
+                                        @PathVariable Long limit,
                                        SysRoleQueryVo sysRoleQueryVo) {
         // 自定义Page，修改current为page，和前端保持一致
         CustomPage<SysRole> pageParam = new CustomPage<>(page, limit);
@@ -93,7 +108,7 @@ public class SysRoleController {
      */
     @ApiOperation("更新角色")
     @PutMapping("")
-    public void get(@RequestBody SysRole role) {
+    public void update(@RequestBody SysRole role) {
         boolean update = sysRoleService.updateById(role);
         if (!update) {
             throw new BizException("更新失败");
