@@ -20,7 +20,12 @@
       <template #tableTitle>
         <n-space>
           <!-- 新增 -->
-          <n-button strong secondary type="primary" @click="addTable">
+          <n-button
+            strong
+            secondary
+            type="primary"
+            @click="() => (showModal = true)"
+          >
             <template #icon>
               <n-icon>
                 <PlusOutlined />
@@ -43,7 +48,7 @@
 
     <!-- 新建弹窗Modal -->
     <n-modal
-      v-model:show="showModel"
+      v-model:show="showModal"
       :show-icon="false"
       preset="dialog"
       title="新建"
@@ -147,7 +152,7 @@ export default defineComponent({
     const params = reactive(defalutParams());
 
     // 新增表格数据
-    const showModel = ref(false);
+    const showModal = ref(false);
     const formBtnLoading = ref(false);
     const formParams = reactive(defalutParams());
 
@@ -251,11 +256,6 @@ export default defineComponent({
       schemas,
     });
 
-    // 显示新增模态框
-    function addTable() {
-      showModel.value = true;
-    }
-
     // 加载数据
     const loadDataTable = async (res) => {
       return await getPageList({ ...res }, params);
@@ -307,7 +307,7 @@ export default defineComponent({
         if (!errors) {
           await addRole(formParams);
           setTimeout(() => {
-            showModel.value = false;
+            showModal.value = false;
             reloadTable();
           });
         } else {
@@ -353,8 +353,7 @@ export default defineComponent({
       rowEditEnd,
       pagination,
       formParams,
-      showModel,
-      addTable,
+      showModal,
       removeRows,
       confirmForm,
       formBtnLoading,

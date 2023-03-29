@@ -31,7 +31,7 @@ export function removeById(id) {
 /**
  * @description: 添加用户
  */
-export function addRole(data) {
+export function addUser(data) {
   return http.request(
     {
       url: `${prefix}`,
@@ -47,7 +47,7 @@ export function addRole(data) {
 /**
  * @description: 更新用户
  */
-export function updateRole(data) {
+export function updateUser(data) {
   return http.request(
     {
       url: `${prefix}`,

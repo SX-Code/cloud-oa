@@ -90,9 +90,14 @@ export function getRoles(adminId) {
  * @description: 分配角色
  */
 export function assignRoles(data) {
-  return http.request({
-    url: `${prefix}/doAssign`,
-    method: 'post',
-    data,
-  });
+  return http.request(
+    {
+      url: `${prefix}/doAssign`,
+      method: 'post',
+      data,
+    },
+    {
+      successMessageText: '分配成功',
+    }
+  );
 }

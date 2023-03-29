@@ -34,7 +34,7 @@
 
     <!-- 分配角色弹窗Modal -->
     <n-modal
-      v-model:show="showAssignModel"
+      v-model:show="showAssignModal"
       :show-icon="false"
       preset="dialog"
       title="分配角色"
@@ -76,7 +76,7 @@
       </n-form>
       <template #action>
         <n-space>
-          <n-button @click="() => (showAssignModel = false)">取消</n-button>
+          <n-button @click="() => (showAssignModal = false)">取消</n-button>
           <n-button
             type="info"
             :loading="formBtnLoading"
@@ -87,44 +87,67 @@
       </template>
     </n-modal>
     <!-- 新建弹窗Modal -->
-    <!--
     <n-modal
-      v-model:show="showModel"
+      v-model:show="showUserModal"
       :show-icon="false"
       preset="dialog"
       title="新建"
+      @after-leave="clearUserForm"
     >
       <n-form
-        :model="formParams"
+        :model="userFormParams"
         :rules="rules"
-        ref="formRef"
+        ref="userFormRef"
         label-placement="left"
         :label-width="80"
         class="py-4"
       >
-        <n-form-item label="角色名称" path="roleName">
+        <n-form-item label="用户名" path="username">
           <n-input
-            placeholder="请输入角色名称"
-            v-model:value="formParams.roleName"
+            placeholder="请输入用户名"
+            v-model:value="userFormParams.username"
+            clearable
           />
         </n-form-item>
-        <n-form-item label="角色编码" path="roleCode">
+        <n-form-item label="密码" path="password" v-if="!isEdit">
+          <n-input-group>
+            <n-input
+              placeholder="请输入密码"
+              v-model:value="userFormParams.password"
+              clearable
+            />
+            <n-button secondary type="info" @click="setDeafultPwd"
+              >默认</n-button
+            >
+          </n-input-group>
+        </n-form-item>
+        <n-form-item label="姓名" path="name">
           <n-input
-            placeholder="请输入角色编码"
-            v-model:value="formParams.roleCode"
+            placeholder="请输入姓名"
+            v-model:value="userFormParams.name"
+            clearable
+          />
+        </n-form-item>
+        <n-form-item label="手机" path="phone">
+          <n-input
+            placeholder="请输入手机"
+            v-model:value="userFormParams.phone"
+            clearable
           />
         </n-form-item>
       </n-form>
       <template #action>
         <n-space>
-          <n-button @click="() => (showModal = false)">取消</n-button>
-          <n-button type="info" :loading="formBtnLoading" @click="confirmForm"
+          <n-button @click="() => (showUserModal = false)">取消</n-button>
+          <n-button
+            type="info"
+            :loading="formBtnLoading"
+            @click="confirmUserForm"
             >确定</n-button
           >
         </n-space>
       </template>
     </n-modal>
-    -->
   </n-card>
 </template>
 <script>
@@ -133,7 +156,13 @@ import { defineComponent, reactive, ref, h, unref, computed } from 'vue';
 import { BasicForm, useForm } from '@/components/Form';
 import { BasicTable, TableAction } from '@/components/Table';
 import { createColumns } from './columns';
-import { getPageList, removeById, updateStatus } from '@/api/system/sysUser';
+import {
+  addUser,
+  getPageList,
+  removeById,
+  updateStatus,
+  updateUser,
+} from '@/api/system/sysUser';
 import {
   PlusOutlined,
   DeleteOutlined,
@@ -141,6 +170,20 @@ import {
   ControlOutlined,
 } from '@vicons/antd';
 import { assignRoles, getRoles } from '@/api/system/sysRole';
+
+const rules = {
+  username: {
+    required: true,
+    trigger: ['blur', 'input'],
+    message: '请输入用户名',
+  },
+  password: {
+    key: 'password',
+    required: true,
+    trigger: ['blur', 'input'],
+    message: '请输入密码',
+  },
+};
 const schemas = [
   {
     field: 'keyword',
@@ -151,28 +194,22 @@ const schemas = [
     componentProps: {
       placeholder: '用户名/姓名/手机号码',
     },
-    rules: [{ required: true, message: '请输入姓名', trigger: ['blur'] }],
   },
   {
-    field: 'createTimeBegin',
+    field: 'range',
     component: 'NDatePicker',
-    label: '开始日期',
+    label: '时间范围',
     labelMessge: '开始日期',
     componentProps: {
       placeholder: '开始日期',
-      type: 'datetime',
+      type: 'datetimerange',
       clearable: true,
-    },
-  },
-  {
-    field: 'createTimeEnd',
-    component: 'NDatePicker',
-    label: '结束时间',
-    labelMessge: '结束时间',
-    componentProps: {
-      placeholder: '结束时间',
-      type: 'datetime',
-      clearable: true,
+      shortcuts: {
+        近2小时: () => {
+          const cur = new Date().getTime();
+          return [cur - 2 * 60 * 60 * 1000, cur];
+        },
+      },
     },
   },
 ];
@@ -180,12 +217,15 @@ const schemas = [
 export default defineComponent({
   components: { PlusOutlined, BasicForm, BasicTable },
   setup() {
+    const isEdit = ref(false);
     const message = useMessage();
     const dialog = useDialog();
     const actionRef = ref();
+    const userFormRef = ref();
     const selections = ref([]);
     const currentIndex = ref(1);
-    const showAssignModel = ref(false);
+    const showAssignModal = ref(false);
+    const showUserModal = ref(false);
     const formBtnLoading = ref(false);
     const selectAll = ref(false);
     const columns = createColumns({
@@ -198,7 +238,7 @@ export default defineComponent({
         row.status = await updateStatus(id, update);
       },
     });
-
+    // 搜索表单参数
     const defalutParams = () => {
       return {
         keyword: '',
@@ -207,6 +247,8 @@ export default defineComponent({
       };
     };
     const params = reactive(defalutParams());
+
+    // 表格列信息
     const actionColumn = reactive({
       width: 150,
       title: '操作',
@@ -227,6 +269,18 @@ export default defineComponent({
         return `共 ${info.itemCount} 条`;
       },
     });
+
+    // 添加/修改用户
+    const defaultUserFormParams = () => {
+      return {
+        id: null,
+        username: '',
+        password: '',
+        name: '',
+        phone: '',
+      };
+    };
+    const userFormParams = reactive(defaultUserFormParams());
 
     // 分配角色
     const assignFormParams = reactive({
@@ -286,14 +340,20 @@ export default defineComponent({
 
     // 注册表单
     const [register, { setProps }] = useForm({
-      gridProps: { cols: '1 s:1 m:2 l:3 xl:4 2xl:5' },
+      gridProps: { cols: 2 },
       showAdvancedButton: true,
       labelWidth: 80,
       schemas,
     });
 
     function handleSubmit(values) {
-      Object.assign(params, values);
+      const { keyword, range } = values;
+      Object.assign(params, {
+        keyword,
+        createTimeBegin: range?.[0],
+        createTimeEnd: range?.[1],
+      });
+      console.log(params);
       reloadTable();
     }
 
@@ -302,6 +362,11 @@ export default defineComponent({
     // 表格
     async function loadDataTable(res) {
       return await getPageList({ ...res }, params);
+    }
+
+    function addTable() {
+      isEdit.value = false;
+      showUserModal.value = true;
     }
 
     function reloadTable() {
@@ -313,7 +378,7 @@ export default defineComponent({
     }
 
     function handleDelete(record) {
-      dialog.info({
+      dialog.warning({
         title: '提示',
         content: `您想删除${record.name}`,
         positiveText: '确定',
@@ -327,7 +392,10 @@ export default defineComponent({
     }
 
     function handleEdit(record) {
-      console.log(record);
+      const { id, username, password, name, phone } = record;
+      isEdit.value = true;
+      showUserModal.value = true;
+      Object.assign(userFormParams, { id, username, password, name, phone });
     }
 
     async function handleAssign(record) {
@@ -342,7 +410,7 @@ export default defineComponent({
       // 赋值操作
       Object.assign(assignFormParams, { username, userId: id, roleIdList });
       allRoleListRef.value = allRoles;
-      showAssignModel.value = true;
+      showAssignModal.value = true;
     }
     function fetchSuccess() {
       currentIndex.value =
@@ -351,10 +419,6 @@ export default defineComponent({
     }
 
     // Modal
-    function addTable() {
-      message.info('添加用户');
-    }
-
     // 全选按钮选中事件
     function handleSelectAll() {
       if (indeterminate.value || !selectAll.value) {
@@ -373,12 +437,58 @@ export default defineComponent({
     }
 
     function confirmAssignForm() {
-      assignRoles(assignFormParams).then(() => {
-        showAssignModel.value = false;
+      formBtnLoading.value = true;
+      assignRoles(assignFormParams)
+        .then(() => {
+          showAssignModal.value = false;
+          formBtnLoading.value = false;
+        })
+        .catch(() => {
+          formBtnLoading.value = false;
+        });
+    }
+
+    function setDeafultPwd() {
+      userFormParams.password = '123456';
+      userFormRef.value?.validate(
+        (errors) => {
+          if (errors) console.log(errors);
+        },
+        (rule) => {
+          return rule?.key === 'password';
+        }
+      );
+    }
+
+    function clearUserForm() {
+      Object.assign(userFormParams, defaultUserFormParams());
+    }
+
+    async function confirmUserForm(e) {
+      e.preventDefault();
+      formBtnLoading.value = true;
+      userFormRef.value?.validate(async (errors) => {
+        if (!errors) {
+          if (isEdit.value) {
+            await updateUser(userFormParams);
+          } else {
+            await addUser(userFormParams);
+          }
+          setTimeout(() => {
+            showUserModal.value = false;
+            reloadTable();
+          });
+        } else {
+          console.log(errors);
+          message.error('请填写完整信息');
+        }
+        formBtnLoading.value = false;
       });
     }
 
     return {
+      rules,
+      isEdit,
       schemas,
       columns,
       actionRef,
@@ -388,12 +498,12 @@ export default defineComponent({
       setProps,
       handleSubmit,
       handleReset,
+      addTable,
       loadDataTable,
       onCheckedRow,
       fetchSuccess,
       formBtnLoading,
-      addTable,
-      showAssignModel,
+      showAssignModal,
       assignFormParams,
       allRoleList: allRoleListRef,
       selectAll,
@@ -401,6 +511,12 @@ export default defineComponent({
       handleSelectAll,
       indeterminate,
       confirmAssignForm,
+      showUserModal,
+      userFormRef,
+      userFormParams,
+      clearUserForm,
+      setDeafultPwd,
+      confirmUserForm,
     };
   },
 });

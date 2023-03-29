@@ -32,6 +32,7 @@ const naive = NaiveUI.create({
     NaiveUI.NCheckbox,
     NaiveUI.NCheckboxGroup,
     NaiveUI.NInput,
+    NaiveUI.NInputGroup,
     NaiveUI.NDataTable,
     NaiveUI.NCard,
     NaiveUI.NSwitch,
