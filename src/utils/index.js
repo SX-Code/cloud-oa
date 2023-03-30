@@ -101,3 +101,20 @@ export function getDynamicProps(props) {
 
   return ret;
 }
+
+/**
+ *  找到对应的节点
+ * */
+let result = null;
+export function getTreeItem(data, key) {
+  data.map((item) => {
+    if (item.key === key) {
+      result = item;
+    } else {
+      if (item.children && item.children.length) {
+        getTreeItem(item.children, key);
+      }
+    }
+  });
+  return result;
+}

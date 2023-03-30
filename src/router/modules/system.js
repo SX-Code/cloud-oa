@@ -35,6 +35,16 @@ const routes = [
         },
         component: () => import('@/views/system/user/list.vue'),
       },
+      {
+        path: 'menu',
+        name: `${routeName}_menu`,
+        meta: {
+          title: '菜单管理',
+          keepAlive: true,
+          permissions: ['system_menu'],
+        },
+        component: () => import('@/views/system/menu/menu.vue'),
+      },
     ],
   },
 ];

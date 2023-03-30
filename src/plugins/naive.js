@@ -46,6 +46,9 @@ const naive = NaiveUI.create({
     NaiveUI.NRadio,
     NaiveUI.NRadioGroup,
     NaiveUI.NFormItemGi,
+    NaiveUI.NSpin,
+    NaiveUI.NTree,
+    NaiveUI.NAlert,
   ],
 });
 export function setupNaive(app) {
