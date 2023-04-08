@@ -27,3 +27,34 @@ export function updateMenu(menuItem) {
     }
   );
 }
+
+/**
+ * @description: 获取某个角色的菜单权限列表
+ */
+export function toAssign(roleId) {
+  return http.request({
+    url: `${prefix}/toAssign/${roleId}`,
+    method: 'get',
+  });
+}
+
+/**
+ * @description: 获取某个角色的菜单权限ID列表
+ */
+export function getMenuIdList(roleId) {
+  return http.request({
+    url: `${prefix}/menuId/${roleId}`,
+    method: 'get',
+  });
+}
+
+/**
+ * @description: 获取某个角色的菜单权限ID列表
+ */
+export function assignMenu(data) {
+  return http.request({
+    url: `${prefix}/doAssign`,
+    method: 'post',
+    data,
+  });
+}

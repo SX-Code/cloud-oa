@@ -24,7 +24,7 @@
             strong
             secondary
             type="primary"
-            @click="() => (showModal = true)"
+            @click="() => (showAddModal = true)"
           >
             <template #icon>
               <n-icon>
@@ -48,7 +48,7 @@
 
     <!-- 新建弹窗Modal -->
     <n-modal
-      v-model:show="showModal"
+      v-model:show="showAddModal"
       :show-icon="false"
       preset="dialog"
       title="新建"
@@ -77,9 +77,56 @@
       <!-- 操作插槽 -->
       <template #action>
         <n-space>
-          <n-button @click="() => (showModal = false)">取消</n-button>
+          <n-button @click="() => (showAddModal = false)">取消</n-button>
           <n-button type="info" :loading="formBtnLoading" @click="confirmForm"
             >确定</n-button
+          >
+        </n-space>
+      </template>
+    </n-modal>
+    <!-- 菜单权限分配Modal -->
+    <n-modal
+      v-model:show="showAssignModal"
+      :show-icon="false"
+      preset="dialog"
+      :title="editRoleTitle"
+    >
+      <div class="py-3 menu-list">
+        <n-tree
+          block-line
+          cascade
+          checkable
+          virtual-scroll
+          :data="treeData"
+          :expandedKeys="expandedKeys"
+          :checked-keys="menuIdList"
+          style="max-height: 650px; overflow: hidden"
+          @update:checked-keys="checkedTree"
+          @update:expanded-keys="onExpandedKeys"
+        />
+      </div>
+      <template #action>
+        <n-space>
+          <n-button type="info" ghost icon-placement="left" @click="packHandle">
+            全部{{ expandedKeys.length ? '收起' : '展开' }}
+          </n-button>
+
+          <n-button
+            type="info"
+            ghost
+            icon-placement="left"
+            @click="checkedAllHandle"
+          >
+            全部{{ checkedAll ? '取消' : '选择' }}
+          </n-button>
+          <n-button type="info" ghost @click="() => (showAssignModal = false)"
+            >取消</n-button
+          >
+          <n-button
+            type="primary"
+            :loading="formBtnLoading"
+            @click="confirmTreeMenu"
+            >提交</n-button
           >
         </n-space>
       </template>
@@ -88,7 +135,15 @@
 </template>
 
 <script>
-import { defineComponent, h, reactive, ref, unref } from 'vue';
+import {
+  defineComponent,
+  h,
+  onMounted,
+  reactive,
+  ref,
+  toRefs,
+  unref,
+} from 'vue';
 import { BasicTable, TableAction } from '@/components/Table';
 import { BasicForm, useForm } from '@/components/Form';
 import {
@@ -105,8 +160,11 @@ import {
   PlusOutlined,
   SaveOutlined,
   CloseSquareOutlined,
+  ControlOutlined,
 } from '@vicons/antd';
 import { useDialog, useMessage } from 'naive-ui';
+import { getTreeAll, transformTree } from '@/utils';
+import { assignMenu, getMenuIdList, getMenuList } from '@/api/system/sysMenu';
 
 const rules = {
   roleName: {
@@ -152,7 +210,7 @@ export default defineComponent({
     const params = reactive(defalutParams());
 
     // 新增表格数据
-    const showModal = ref(false);
+    const showAddModal = ref(false);
     const formBtnLoading = ref(false);
     const formParams = reactive(defalutParams());
 
@@ -176,11 +234,26 @@ export default defineComponent({
       render(record) {
         return h(TableAction, {
           style: 'text',
+          showLabel: false,
           actions: createActions(record),
         });
       },
     });
 
+    // 菜单分配
+    const showAssignModal = ref(false);
+    const editRoleTitle = ref('');
+    const treeData = ref([]);
+    const expandedKeys = ref([]);
+    const assignMenuParam = reactive({
+      roleId: [],
+      menuIdList: [],
+    });
+    const checkedAll = ref(false);
+
+    /**
+     * 表格处理事件
+     */
     // 编辑点击事件
     function handleEdit(record) {
       currentEditKeyRef.value = record.key;
@@ -200,6 +273,16 @@ export default defineComponent({
         // 提交更新
         await updateRole({ id, roleName, roleCode });
       }
+    }
+    // 处理分配菜单
+    async function handleAssign(record) {
+      editRoleTitle.value = `分配 ${record.roleName} 的菜单权限`;
+      // 获取角色及所有权限信息
+      const menuIdList = await getMenuIdList(record.id);
+      assignMenuParam.roleId = record.id;
+      assignMenuParam.menuIdList = menuIdList;
+      expandedKeys.value = menuIdList;
+      showAssignModal.value = true;
     }
 
     function createActions(record) {
@@ -229,6 +312,16 @@ export default defineComponent({
             },
             // 根据权限控制是否显示: 有权限，会显示，支持多个
             auth: ['system_role'],
+          },
+          {
+            label: '分配角色',
+            type: 'warning',
+            icon: ControlOutlined,
+            onClick: handleAssign.bind(null, record),
+            ifShow: () => {
+              return true;
+            },
+            auth: ['system_menu'],
           },
         ];
       } else {
@@ -268,7 +361,6 @@ export default defineComponent({
 
     // 单行删除
     function handleDelete(record) {
-      console.log(record);
       dialog.info({
         title: '提示',
         content: `您想删除${record.roleName}`,
@@ -307,7 +399,7 @@ export default defineComponent({
         if (!errors) {
           await addRole(formParams);
           setTimeout(() => {
-            showModal.value = false;
+            showAddModal.value = false;
             reloadTable();
           });
         } else {
@@ -343,6 +435,57 @@ export default defineComponent({
       });
     }
 
+    /**
+     * 菜单权限分配处理方法
+     */
+
+    // 节点勾选项发生变化时的回调函数
+    function checkedTree(keys) {
+      assignMenuParam.menuIdList = [...assignMenuParam.menuIdList, ...keys];
+    }
+
+    function onExpandedKeys(keys) {
+      expandedKeys.value = keys;
+    }
+
+    // 收起和展开
+    function packHandle() {
+      if (expandedKeys.value.length) {
+        expandedKeys.value = [];
+      } else {
+        expandedKeys.value = getTreeAll(treeData.value);
+      }
+    }
+
+    // 全选
+    function checkedAllHandle() {
+      if (!checkedAll.value) {
+        assignMenuParam.menuIdList = getTreeAll(treeData.value);
+        checkedAll.value = false;
+      } else {
+        assignMenuParam.menuIdList = [];
+        checkedAll.value = false;
+      }
+    }
+
+    function confirmTreeMenu() {
+      formBtnLoading.value = true;
+      assignMenu(assignMenuParam)
+        .then(() => {
+          message.success('分配成功');
+          showAssignModal.value = false;
+        })
+        .finally(() => {
+          formBtnLoading.value = false;
+        });
+    }
+
+    onMounted(async () => {
+      const menuList = await getMenuList();
+      const { treeMenuList } = transformTree(menuList);
+      treeData.value = treeMenuList;
+    });
+
     return {
       rules,
       columns,
@@ -353,7 +496,13 @@ export default defineComponent({
       rowEditEnd,
       pagination,
       formParams,
-      showModal,
+      showAssignModal,
+      editRoleTitle,
+      treeData,
+      expandedKeys,
+      ...toRefs(assignMenuParam),
+      checkedAll,
+      showAddModal,
       removeRows,
       confirmForm,
       formBtnLoading,
@@ -363,6 +512,11 @@ export default defineComponent({
       actionRef,
       handleSubmit,
       handleReset,
+      checkedTree,
+      onExpandedKeys,
+      packHandle,
+      checkedAllHandle,
+      confirmTreeMenu,
     };
   },
 });

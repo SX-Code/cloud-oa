@@ -221,7 +221,7 @@ import {
   PlusOutlined,
 } from '@vicons/antd';
 import { getMenuList, updateMenu } from '@/api/system/sysMenu';
-import { getTreeItem } from '@/utils';
+import { getTreeItem, transformTreeDepth2 } from '@/utils';
 import { useDialog, useMessage } from 'naive-ui';
 import { BasicTable, TableAction } from '@/components/Table';
 import { usePermission } from '@/hooks/web/usePermission';
@@ -442,24 +442,6 @@ export default defineComponent({
       }
     }
 
-    function transformTreeMenuList(treeMenuList) {
-      treeMenuList.map((item) => {
-        if (item.children.length > 0) {
-          item.children.map((citem) => {
-            citem['key'] = citem.subtitle ? citem.subtitle : citem.id;
-            citem['operation'] = citem.children;
-            citem['children'] = null;
-          });
-        }
-        item['key'] = item.subtitle ? item.subtitle : item.id;
-        return item;
-      });
-      treeMenuList = JSON.parse(
-        JSON.stringify(treeMenuList).replace(/\btitle/g, 'label')
-      );
-      return treeMenuList;
-    }
-
     function handleDel() {
       dialog.info({
         title: '提示',
@@ -499,11 +481,10 @@ export default defineComponent({
     function addOperation() {}
 
     onMounted(async () => {
-      let treeMenuList = await getMenuList();
-      const keys = treeMenuList.map((item) => item.subtitle);
+      const menuList = await getMenuList();
+      const keys = menuList.map((item) => item.id);
       Object.assign(formParams, keys);
-      treeMenuList = transformTreeMenuList(treeMenuList);
-      console.log(treeMenuList);
+      const { treeMenuList } = transformTreeDepth2(menuList);
       treeData.value = treeMenuList;
       loading.value = false;
     });

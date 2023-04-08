@@ -118,3 +118,57 @@ export function getTreeItem(data, key) {
   });
   return result;
 }
+
+/**
+ *  找到所有节点
+ * */
+const treeAll = [];
+export function getTreeAll(data) {
+  data.map((item) => {
+    treeAll.push(item.key);
+    if (item.children && item.children.length) {
+      getTreeAll(item.children);
+    }
+  });
+  return treeAll;
+}
+
+export function transformTree(treeMenuList, isCheckedKeys = false) {
+  const checkedKeys = [];
+  treeMenuList.map((item) => {
+    item['key'] = item.id;
+    if (isCheckedKeys && item['isSelect']) checkedKeys.push(item.id);
+    if (item.children && item.children.length) {
+      transformTree(item.children);
+    } else {
+      item.children = null;
+    }
+  });
+  treeMenuList = JSON.parse(
+    JSON.stringify(treeMenuList).replace(/\btitle/g, 'label')
+  );
+  return { treeMenuList, checkedKeys };
+}
+
+/**
+ * 转化后端的菜单数据以符合Naive UI
+ */
+export function transformTreeDepth2(treeMenuList, isCheckedKeys = false) {
+  const checkedKeys = [];
+  treeMenuList.map((item) => {
+    if (item.children && item.children.length) {
+      item.children.map((citem) => {
+        citem['key'] = citem.id;
+        citem['operation'] = citem.children;
+        citem['children'] = null;
+        if (isCheckedKeys && citem['isSelect']) checkedKeys.push(citem.id);
+      });
+    }
+    item['key'] = item.id;
+    if (isCheckedKeys && item['isSelect']) checkedKeys.push(item.id);
+  });
+  treeMenuList = JSON.parse(
+    JSON.stringify(treeMenuList).replace(/\btitle/g, 'label')
+  );
+  return { treeMenuList, checkedKeys };
+}

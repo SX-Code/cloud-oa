@@ -116,7 +116,7 @@ export default defineComponent({
                 router.replace('/');
               } else router.replace(toPath);
             } else {
-              message.info(msg || '登录失败');
+              message.error(msg || '登录失败');
             }
           } finally {
             loading.value = false;
