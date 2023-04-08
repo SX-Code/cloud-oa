@@ -97,9 +97,10 @@
           cascade
           checkable
           virtual-scroll
+          ref="treeRef"
           :data="treeData"
           :expandedKeys="expandedKeys"
-          :checked-keys="menuIdList"
+          :checked-keys="checkedKeys"
           style="max-height: 650px; overflow: hidden"
           @update:checked-keys="checkedTree"
           @update:expanded-keys="onExpandedKeys"
@@ -135,15 +136,7 @@
 </template>
 
 <script>
-import {
-  defineComponent,
-  h,
-  onMounted,
-  reactive,
-  ref,
-  toRefs,
-  unref,
-} from 'vue';
+import { defineComponent, h, onMounted, reactive, ref, unref } from 'vue';
 import { BasicTable, TableAction } from '@/components/Table';
 import { BasicForm, useForm } from '@/components/Form';
 import {
@@ -200,6 +193,7 @@ export default defineComponent({
     const dialog = useDialog();
     const formRef = ref(null);
     const actionRef = ref();
+    const treeRef = ref(null);
     const currentEditKeyRef = ref('');
     const defalutParams = () => {
       return {
@@ -245,9 +239,10 @@ export default defineComponent({
     const editRoleTitle = ref('');
     const treeData = ref([]);
     const expandedKeys = ref([]);
+    const checkedKeys = ref([]);
     const assignMenuParam = reactive({
-      roleId: [],
-      menuIdList: [],
+      roleId: null,
+      menuIdList: null,
     });
     const checkedAll = ref(false);
 
@@ -280,7 +275,7 @@ export default defineComponent({
       // 获取角色及所有权限信息
       const menuIdList = await getMenuIdList(record.id);
       assignMenuParam.roleId = record.id;
-      assignMenuParam.menuIdList = menuIdList;
+      checkedKeys.value = menuIdList;
       expandedKeys.value = menuIdList;
       showAssignModal.value = true;
     }
@@ -441,7 +436,7 @@ export default defineComponent({
 
     // 节点勾选项发生变化时的回调函数
     function checkedTree(keys) {
-      assignMenuParam.menuIdList = [...assignMenuParam.menuIdList, ...keys];
+      checkedKeys.value = [...keys];
     }
 
     function onExpandedKeys(keys) {
@@ -460,16 +455,19 @@ export default defineComponent({
     // 全选
     function checkedAllHandle() {
       if (!checkedAll.value) {
-        assignMenuParam.menuIdList = getTreeAll(treeData.value);
-        checkedAll.value = false;
+        checkedKeys.value = getTreeAll(treeData.value);
+        checkedAll.value = true;
       } else {
-        assignMenuParam.menuIdList = [];
+        checkedKeys.value = [];
         checkedAll.value = false;
       }
     }
 
     function confirmTreeMenu() {
       formBtnLoading.value = true;
+      // 选中 + 半选 = 所有选中节点
+      const halfChecked = treeRef.value.getIndeterminateData().keys;
+      assignMenuParam.menuIdList = [...checkedKeys.value, ...halfChecked];
       assignMenu(assignMenuParam)
         .then(() => {
           message.success('分配成功');
@@ -493,6 +491,7 @@ export default defineComponent({
       register,
       setProps,
       formRef,
+      treeRef,
       rowEditEnd,
       pagination,
       formParams,
@@ -500,7 +499,7 @@ export default defineComponent({
       editRoleTitle,
       treeData,
       expandedKeys,
-      ...toRefs(assignMenuParam),
+      checkedKeys,
       checkedAll,
       showAddModal,
       removeRows,
