@@ -2,14 +2,12 @@ package com.swx.auth.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.swx.auth.mapper.SysUserRoleMapper;
-import com.swx.auth.service.SysUserRoleService;
-import com.swx.model.system.AssignRoleVo;
+import com.swx.vo.system.AssignRoleVo;
 import com.swx.model.system.SysRole;
 import com.swx.auth.mapper.SysRoleMapper;
 import com.swx.auth.service.SysRoleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.swx.model.system.SysUserRole;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 

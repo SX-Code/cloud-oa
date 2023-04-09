@@ -1,4 +1,4 @@
-package com.swx.model.system;
+package com.swx.vo.system;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

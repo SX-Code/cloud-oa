@@ -249,6 +249,7 @@ const columns = [
     title: '权限',
     key: 'auth',
     edit: true,
+    editRow: true,
     editComponent: 'NInput',
   },
 ];

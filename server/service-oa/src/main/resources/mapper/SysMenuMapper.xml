@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swx.auth.mapper.SysMenuMapper">
+
+    <select id="queryAuthListByUserId" resultType="com.swx.vo.system.Permission" parameterType="long">
+        SELECT m.title, m.auth
+        FROM `sys_role_menu` rm, `sys_menu` m, `sys_user_role` ur
+        WHERE rm.menu_id = m.id AND ur.role_id = rm.role_id AND ur.user_id = #{userId}
+          AND rm.deleted = 1 AND m.deleted = 1 AND ur.deleted = 1
+    </select>
+
+    <select id="selectIdTypeList" resultType="com.swx.vo.system.MenuWithIdType" parameterType="long">
+        SELECT m.id, m.type
+        FROM `sys_role_menu` rm, `sys_menu` m
+        WHERE rm.menu_id = m.id AND rm.deleted = 1 AND m.deleted = 1 AND rm.role_id = #{roleId}
+    </select>
+
+</mapper>

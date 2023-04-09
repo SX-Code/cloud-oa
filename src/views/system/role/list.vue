@@ -157,7 +157,11 @@ import {
 } from '@vicons/antd';
 import { useDialog, useMessage } from 'naive-ui';
 import { getTreeAll, transformTree } from '@/utils';
-import { assignMenu, getMenuIdList, getMenuList } from '@/api/system/sysMenu';
+import {
+  assignMenu,
+  getRoleMenuIdTypeList,
+  getMenuList,
+} from '@/api/system/sysMenu';
 
 const rules = {
   roleName: {
@@ -272,11 +276,15 @@ export default defineComponent({
     // 处理分配菜单
     async function handleAssign(record) {
       editRoleTitle.value = `分配 ${record.roleName} 的菜单权限`;
-      // 获取角色及所有权限信息
-      const menuIdList = await getMenuIdList(record.id);
       assignMenuParam.roleId = record.id;
-      checkedKeys.value = menuIdList;
-      expandedKeys.value = menuIdList;
+      // 获取角色及所有权限信息
+      const menuIdTypeList = await getRoleMenuIdTypeList(record.id);
+      if (menuIdTypeList != null && menuIdTypeList.length > 0) {
+        checkedKeys.value = menuIdTypeList
+          .filter((item) => item.type == 2)
+          .map((item) => item.id);
+        expandedKeys.value = menuIdTypeList.map((item) => item.id);
+      }
       showAssignModal.value = true;
     }
 
@@ -295,7 +303,7 @@ export default defineComponent({
               return true;
             },
             // 根据权限控制是否显示: 有权限，会显示，支持多个
-            auth: ['system_role'],
+            auth: ['system_role_remove'],
           },
           {
             label: '编辑',
@@ -306,7 +314,7 @@ export default defineComponent({
               return true;
             },
             // 根据权限控制是否显示: 有权限，会显示，支持多个
-            auth: ['system_role'],
+            auth: ['system_role_update'],
           },
           {
             label: '分配角色',
@@ -316,7 +324,7 @@ export default defineComponent({
             ifShow: () => {
               return true;
             },
-            auth: ['system_menu'],
+            auth: ['system_menu_assign'],
           },
         ];
       } else {

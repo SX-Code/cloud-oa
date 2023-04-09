@@ -1,6 +1,6 @@
 package com.swx.auth.service;
 
-import com.swx.model.system.AssignRoleVo;
+import com.swx.vo.system.AssignRoleVo;
 import com.swx.model.system.SysRole;
 import com.baomidou.mybatisplus.extension.service.IService;
 

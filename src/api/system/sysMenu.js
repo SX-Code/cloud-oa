@@ -41,9 +41,19 @@ export function toAssign(roleId) {
 /**
  * @description: 获取某个角色的菜单权限ID列表
  */
-export function getMenuIdList(roleId) {
+export function getRoleMenuIdList(roleId) {
   return http.request({
     url: `${prefix}/menuId/${roleId}`,
+    method: 'get',
+  });
+}
+
+/**
+ * @description: 获取某个角色的菜单操作权限ID列表
+ */
+export function getRoleMenuIdTypeList(roleId) {
+  return http.request({
+    url: `${prefix}/menuIdType/${roleId}`,
     method: 'get',
   });
 }

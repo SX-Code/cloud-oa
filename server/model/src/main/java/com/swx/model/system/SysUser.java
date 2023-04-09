@@ -1,14 +1,15 @@
 package com.swx.model.system;
 
-import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swx.model.base.BaseEntity;
-import com.baomidou.mybatisplus.annotation.Version;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.swx.vo.system.Permission;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 /**
  * <p>
@@ -56,5 +57,7 @@ public class SysUser extends BaseEntity {
     @ApiModelProperty(value = "状态（1:正常，0:停用）")
     private Integer status;
 
+    @TableField(exist = false)
+    private List<Permission> permissions;
 
 }

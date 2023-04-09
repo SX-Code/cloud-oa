@@ -7,6 +7,7 @@ import com.swx.auth.service.SysUserService;
 import com.swx.common.annotation.ResponseResult;
 import com.swx.common.pojo.BizException;
 import com.swx.common.pojo.ResultCode;
+import com.swx.common.utils.MD5;
 import com.swx.model.system.SysUser;
 import com.swx.vo.system.SysUserQueryVo;
 import com.swx.vo.system.page.CustomPage;
@@ -64,10 +65,11 @@ public class SysUserController {
                     .like(SysUser::getPhone, keyword);
         }
         if (!StringUtils.isEmpty(createTimeBegin)) {
-            wrapper.ge(SysUser::getCreateTime, createTimeBegin);
+            ;
+            wrapper.apply("UNIX_TIMESTAMP(create_time) >= " + Long.parseLong(createTimeBegin) / 1000);
         }
         if (!StringUtils.isEmpty(createTimeEnd)) {
-            wrapper.le(SysUser::getCreateTime, createTimeEnd);
+            wrapper.apply("UNIX_TIMESTAMP(create_time) < " + Long.parseLong(createTimeEnd) / 1000);
         }
 
         IPage<SysUser> pageModel = sysUserService.page(pageParam, wrapper);
@@ -83,6 +85,9 @@ public class SysUserController {
     @ApiOperation(value = "保存用户")
     @PostMapping("")
     public void save(@RequestBody SysUser user) {
+        // 使用md5对密码进行加密
+        String passwordMD5 = MD5.encrypt(user.getPassword());
+        user.setPassword(passwordMD5);
         boolean save = sysUserService.save(user);
         if (!save) {
             throw new BizException("添加失败");

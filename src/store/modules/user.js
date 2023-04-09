@@ -53,9 +53,7 @@ export const useUserStore = defineStore({
         if (code === ResultEnum.SUCCESS) {
           const ex = 7 * 24 * 60 * 60;
           storage.set(ACCESS_TOKEN, result.token, ex);
-          storage.set(CURRENT_USER, result, ex);
           this.setToken(result.token);
-          this.setUserInfo(result);
         }
         return Promise.resolve(response);
       } catch (e) {
@@ -71,9 +69,12 @@ export const useUserStore = defineStore({
           .then((res) => {
             const result = res;
             if (result.permissions && result.permissions.length) {
+              const ex = 7 * 24 * 60 * 60;
+              storage.set(CURRENT_USER, result, ex);
               const permissionsList = result.permissions;
               that.setPermissions(permissionsList);
               that.setUserInfo(result);
+              this.setUserInfo(result);
             } else {
               reject(
                 new Error('getInfo: permissionsList must be a non-null array !')

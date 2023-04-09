@@ -151,14 +151,14 @@ public class CodeGenerate {
 
         String entityPath = projectPath.concat("/model").concat(parentPath).concat("/model/system");
         String mapper_path = projectPath.concat(otherPath).concat("/mapper");
-        String xml_path = projectPath.concat("/service-oa").concat("/src/main/resources/xml");
+        String mapper_xml_path = projectPath.concat("/service-oa").concat("/src/main/resources/mapper");
         String service_path = projectPath.concat(otherPath).concat("/service");
         String service_impl_path = projectPath.concat(otherPath).concat("/service/impl");
         String controller_path = projectPath.concat(otherPath).concat("/controller");
 
         pathInfo.put("entity_path",entityPath);
         pathInfo.put("mapper_path",mapper_path);
-        pathInfo.put("xml_path",xml_path);
+        pathInfo.put("xml_path",mapper_xml_path);
         pathInfo.put("service_path",service_path);
         pathInfo.put("service_impl_path",service_impl_path);
         pathInfo.put("controller_path",controller_path);
@@ -167,7 +167,7 @@ public class CodeGenerate {
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
-        strategy.setInclude("sys_user", "sys_user_role");
+        strategy.setInclude("sys_menu", "sys_role_menu");
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
         strategy.setEntityLombokModel(true);

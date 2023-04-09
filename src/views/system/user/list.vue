@@ -311,7 +311,7 @@ export default defineComponent({
             return true;
           },
           // 根据权限控制是否显示: 有权限，会显示，支持多个
-          auth: ['system_role'],
+          auth: ['system_user_remove'],
         },
         {
           label: '编辑',
@@ -321,7 +321,7 @@ export default defineComponent({
           ifShow: () => {
             return true;
           },
-          auth: ['system_role'],
+          auth: ['system_user_update'],
         },
         {
           label: '分配角色',
@@ -331,7 +331,7 @@ export default defineComponent({
           ifShow: () => {
             return true;
           },
-          auth: ['system_role'],
+          auth: ['system_user_assign'],
         },
       ];
     }

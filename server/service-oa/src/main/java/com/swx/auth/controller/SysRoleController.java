@@ -3,17 +3,15 @@ package com.swx.auth.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.swx.auth.service.SysRoleService;
 import com.swx.common.annotation.ResponseResult;
 import com.swx.common.pojo.BizException;
-import com.swx.model.system.AssignRoleVo;
+import com.swx.vo.system.AssignRoleVo;
 import com.swx.model.system.SysRole;
 import com.swx.vo.system.SysRoleQueryVo;
 import com.swx.vo.system.page.CustomPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
