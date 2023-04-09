@@ -20,7 +20,13 @@
       <template #tableTitle>
         <n-space>
           <!-- 新增 -->
-          <n-button strong secondary type="primary" @click="addTable">
+          <n-button
+            v-if="hasAddPermission"
+            strong
+            secondary
+            type="primary"
+            @click="addTable"
+          >
             <template #icon>
               <n-icon>
                 <PlusOutlined />
@@ -89,6 +95,7 @@
     <!-- 新建弹窗Modal -->
     <n-modal
       v-model:show="showUserModal"
+      v-if="hasAddPermission"
       :show-icon="false"
       preset="dialog"
       title="新建"
@@ -170,6 +177,7 @@ import {
   ControlOutlined,
 } from '@vicons/antd';
 import { assignRoles, getRoles } from '@/api/system/sysRole';
+import { usePermission } from '@/hooks/web/usePermission';
 
 const rules = {
   username: {
@@ -219,6 +227,7 @@ export default defineComponent({
   setup() {
     const isEdit = ref(false);
     const message = useMessage();
+    const { hasPermission } = usePermission();
     const dialog = useDialog();
     const actionRef = ref();
     const userFormRef = ref();
@@ -247,6 +256,10 @@ export default defineComponent({
       };
     };
     const params = reactive(defalutParams());
+
+    const hasAddPermission = computed(() => {
+      return hasPermission(['system_user_add']);
+    });
 
     // 表格列信息
     const actionColumn = reactive({
@@ -517,6 +530,7 @@ export default defineComponent({
       clearUserForm,
       setDeafultPwd,
       confirmUserForm,
+      hasAddPermission,
     };
   },
 });

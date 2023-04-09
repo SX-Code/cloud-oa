@@ -137,8 +137,10 @@
               v-if="operationAuth"
             >
               <BasicTable
+                :key="timer"
                 :columns="columns"
                 :actionColumn="actionColumn"
+                ref="actionRef"
                 :pagination="false"
                 size="small"
                 :canResize="false"
@@ -220,7 +222,7 @@ import {
   SaveOutlined,
   PlusOutlined,
 } from '@vicons/antd';
-import { getMenuList, updateMenu } from '@/api/system/sysMenu';
+import { getMenuList, removeById, updateMenu } from '@/api/system/sysMenu';
 import { getTreeItem, transformTreeDepth2 } from '@/utils';
 import { useDialog, useMessage } from 'naive-ui';
 import { BasicTable, TableAction } from '@/components/Table';
@@ -265,6 +267,8 @@ export default defineComponent({
   },
   setup() {
     const formRef = ref(null);
+    const actionRef = ref();
+    const timer = ref('');
     const message = useMessage();
     const dialog = useDialog();
     const { hasPermission } = usePermission();
@@ -434,6 +438,7 @@ export default defineComponent({
         treeItemTitle.value = treeItem.label;
         Object.assign(formParams, treeItem);
         operationAuth.value = treeItem?.operation;
+        timer.value = new Date().getTime();
         isEditMenu.value = true;
       } else {
         isEditMenu.value = false;
@@ -449,11 +454,14 @@ export default defineComponent({
         content: `您确定想删除此权限吗?`,
         positiveText: '确定',
         negativeText: '取消',
-        onPositiveClick: () => {
+        onPositiveClick: async () => {
+          // 权限验证
+          if (!hasPermission(['system_menu_remove'])) {
+            return message.error('抱歉，您没有该权限');
+          }
+          const { id } = formParams;
+          await removeById(id);
           message.success('删除成功');
-        },
-        onNegativeClick: () => {
-          message.error('已取消');
         },
       });
     }
@@ -467,11 +475,10 @@ export default defineComponent({
       formRef.value?.validate(async (errors) => {
         if (!errors) {
           // 权限验证
-          if (!hasPermission(['system_menu'])) {
+          if (!hasPermission(['system_menu_update'])) {
             return message.error('抱歉，您没有该权限');
           }
           const { id, label: title, subtitle, path, auth } = formParams;
-          console.log(formParams);
           await updateMenu({ id, title, subtitle, path, auth });
         } else {
           message.error('请填写完整信息');
@@ -497,6 +504,8 @@ export default defineComponent({
     return {
       rules,
       formRef,
+      actionRef,
+      timer,
       treeData,
       formParams,
       operationAuth,

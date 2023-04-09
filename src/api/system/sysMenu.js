@@ -29,6 +29,21 @@ export function updateMenu(menuItem) {
 }
 
 /**
+ * @description: 根据ID删除菜单
+ */
+export function removeById(id) {
+  return http.request(
+    {
+      url: `${prefix}/${id}`,
+      method: 'DELETE',
+    },
+    {
+      successMessageText: '删除成功',
+    }
+  );
+}
+
+/**
  * @description: 获取某个角色的菜单权限列表
  */
 export function toAssign(roleId) {

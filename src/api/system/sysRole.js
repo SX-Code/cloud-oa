@@ -61,7 +61,7 @@ export function updateRole(data) {
 }
 
 /**
- * @description: 更新角色
+ * @description: 批量删除角色
  */
 export function batchRemove(ids) {
   return http.request(

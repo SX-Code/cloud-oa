@@ -21,6 +21,7 @@
         <n-space>
           <!-- 新增 -->
           <n-button
+            v-if="hasAddPermission"
             strong
             secondary
             type="primary"
@@ -34,7 +35,13 @@
             添加
           </n-button>
           <!-- 批量删除 -->
-          <n-button strong secondary type="error" @click="removeRows">
+          <n-button
+            v-if="hasBatchRemovePermission"
+            strong
+            secondary
+            type="error"
+            @click="removeRows"
+          >
             <template #icon>
               <n-icon>
                 <DeleteOutlined />
@@ -49,6 +56,7 @@
     <!-- 新建弹窗Modal -->
     <n-modal
       v-model:show="showAddModal"
+      v-if="hasAddPermission"
       :show-icon="false"
       preset="dialog"
       title="新建"
@@ -136,7 +144,15 @@
 </template>
 
 <script>
-import { defineComponent, h, onMounted, reactive, ref, unref } from 'vue';
+import {
+  computed,
+  defineComponent,
+  h,
+  onMounted,
+  reactive,
+  ref,
+  unref,
+} from 'vue';
 import { BasicTable, TableAction } from '@/components/Table';
 import { BasicForm, useForm } from '@/components/Form';
 import {
@@ -162,6 +178,7 @@ import {
   getRoleMenuIdTypeList,
   getMenuList,
 } from '@/api/system/sysMenu';
+import { usePermission } from '@/hooks/web/usePermission';
 
 const rules = {
   roleName: {
@@ -195,6 +212,7 @@ export default defineComponent({
   setup() {
     const message = useMessage();
     const dialog = useDialog();
+    const { hasPermission } = usePermission();
     const formRef = ref(null);
     const actionRef = ref();
     const treeRef = ref(null);
@@ -206,6 +224,13 @@ export default defineComponent({
       };
     };
     const params = reactive(defalutParams());
+
+    const hasAddPermission = computed(() => {
+      return hasPermission(['system_role_add']);
+    });
+    const hasBatchRemovePermission = computed(() => {
+      return hasPermission(['system_role_remove']);
+    });
 
     // 新增表格数据
     const showAddModal = ref(false);
@@ -524,6 +549,8 @@ export default defineComponent({
       packHandle,
       checkedAllHandle,
       confirmTreeMenu,
+      hasAddPermission,
+      hasBatchRemovePermission,
     };
   },
 });
