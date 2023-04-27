@@ -12,6 +12,7 @@ import com.swx.vo.system.SysRoleQueryVo;
 import com.swx.vo.system.page.CustomPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +39,7 @@ public class SysRoleController {
         this.sysRoleService = sysRoleService;
     }
 
-    @ApiOperation("获取角色")
+    @ApiOperation("获取用户的角色")
     @GetMapping("/toAssign/{userId}")
     public Map<String, Object> toAssign(@PathVariable Long userId) {
         Map<String, Object> map = sysRoleService.findRoleDataByUserId(userId);
@@ -46,12 +47,14 @@ public class SysRoleController {
     }
 
     @ApiOperation("为用户分配角色")
+    @PreAuthorize("hasAuthority('system_role_assign')")
     @PostMapping("/doAssign")
     public void doAssign(@RequestBody AssignRoleVo assignRoleVo) {
         sysRoleService.doAssign(assignRoleVo);
     }
 
     @ApiOperation("查询所有角色")
+    @PreAuthorize("hasAuthority('system_role_list')")
     @GetMapping("/findAll")
     public List<SysRole> findAll() {
         return sysRoleService.list();
@@ -65,6 +68,7 @@ public class SysRoleController {
      * @return 分页信息
      */
     @ApiOperation("条件分页查询")
+    @PreAuthorize("hasAuthority('system_role_list')")
     @GetMapping("{page}/{limit}")
     public IPage<SysRole> pageQueryRole(@PathVariable Long page,
                                         @PathVariable Long limit,
@@ -81,6 +85,7 @@ public class SysRoleController {
     }
 
     @ApiOperation("添加角色")
+    @PreAuthorize("hasAuthority('system_role_add')")
     @PostMapping("")
     public void save(@RequestBody SysRole role) {
         boolean save = sysRoleService.save(role);
@@ -95,6 +100,7 @@ public class SysRoleController {
      * @return 角色
      */
     @ApiOperation("根据ID查询")
+    @PreAuthorize("hasAuthority('system_role_list')")
     @GetMapping("{id}")
     public SysRole get(@PathVariable Long id) {
         return sysRoleService.getById(id);
@@ -105,6 +111,7 @@ public class SysRoleController {
      * @param role 角色信息
      */
     @ApiOperation("更新角色")
+    @PreAuthorize("hasAuthority('system_role_update')")
     @PutMapping("")
     public void update(@RequestBody SysRole role) {
         boolean update = sysRoleService.updateById(role);
@@ -114,6 +121,7 @@ public class SysRoleController {
     }
 
     @ApiOperation("根据id删除")
+    @PreAuthorize("hasAuthority('system_role_remove')")
     @DeleteMapping("{id}")
     public void delete(@PathVariable Long id) {
         boolean delete = sysRoleService.removeById(id);
@@ -123,6 +131,7 @@ public class SysRoleController {
     }
 
     @ApiOperation("批量删除")
+    @PreAuthorize("hasAuthority('system_role_remove')")
     @DeleteMapping("batch")
     public void batchRemove(@RequestBody List<Long> ids) {
         boolean delete = sysRoleService.removeByIds(ids);

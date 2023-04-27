@@ -6,13 +6,13 @@
         SELECT m.title, m.auth
         FROM `sys_role_menu` rm, `sys_menu` m, `sys_user_role` ur
         WHERE rm.menu_id = m.id AND ur.role_id = rm.role_id AND ur.user_id = #{userId}
-          AND rm.deleted = 1 AND m.deleted = 1 AND ur.deleted = 1
+          AND rm.deleted = 0 AND m.deleted = 0 AND ur.deleted = 0
     </select>
 
     <select id="selectIdTypeList" resultType="com.swx.vo.system.MenuWithIdType" parameterType="long">
         SELECT m.id, m.type
         FROM `sys_role_menu` rm, `sys_menu` m
-        WHERE rm.menu_id = m.id AND rm.deleted = 1 AND m.deleted = 1 AND rm.role_id = #{roleId}
+        WHERE rm.menu_id = m.id AND rm.deleted = 0 AND m.deleted = 0 AND rm.role_id = #{roleId}
     </select>
 
 </mapper>

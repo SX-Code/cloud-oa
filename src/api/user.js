@@ -31,10 +31,9 @@ export function login(data) {
 /**
  * @description: 用户登出
  */
-export function logout(data) {
+export function logout() {
   return http.request({
     url: `${prefix}/logout`,
     method: 'POST',
-    data,
   });
 }

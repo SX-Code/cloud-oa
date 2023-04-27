@@ -52,7 +52,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         wrapper.eq(SysMenu::getParentId, id);
         Integer count = baseMapper.selectCount(wrapper);
         if (count > 0) {
-            throw new BizException("菜单不能删除");
+            throw new BizException("子菜单不能删除");
         }
         baseMapper.deleteById(id);
     }

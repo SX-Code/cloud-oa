@@ -23,28 +23,18 @@ public class JwtHelper {
     }
 
     public static Long getUserId(String token) {
-        try {
-            if (StringUtils.isEmpty(token)) return null;
-            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
-            Claims body = claimsJws.getBody();
-            String userId = body.get("userId").toString();
-            return Long.parseLong(userId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        if (StringUtils.isEmpty(token)) return null;
+        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
+        Claims body = claimsJws.getBody();
+        String userId = body.get("userId").toString();
+        return Long.parseLong(userId);
     }
 
     public static String getUsername(String token) {
-        try {
-            if (StringUtils.isEmpty(token)) return null;
-            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
-            Claims body = claimsJws.getBody();
-            return (String) body.get("username");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        if (StringUtils.isEmpty(token)) return null;
+        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
+        Claims body = claimsJws.getBody();
+        return (String) body.get("username");
     }
 
 }

@@ -25,7 +25,7 @@ public class R implements Serializable {
         this.data = data;
     }
 
-    private void setResultCode(ResultCode resultCode) {
+    public void setResultCode(ResultCode resultCode) {
         this.code = resultCode.code();
         this.message = resultCode.message();
     }

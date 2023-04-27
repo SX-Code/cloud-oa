@@ -92,7 +92,12 @@ const transform = {
       case ResultEnum.ERROR:
         $message.error(errMsg);
         break;
-      case ResultEnum.TOKEN_TIMEOUT: {
+      // 权限错误
+      case ResultEnum.PERMISSION_ERROR:
+        $message.error(errMsg);
+        break;
+      case ResultEnum.TOKEN_UNSUPPORTED:
+      case ResultEnum.TOKEN_INVALID: {
         const LoginName = PageEnum.BASE_LOGIN_NAME;
         const LoginPath = PageEnum.BASE_LOGIN;
         if (router.currentRoute.value?.name === LoginName) return;

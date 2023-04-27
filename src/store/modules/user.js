@@ -2,7 +2,7 @@ import { storage } from '@/utils/Storage';
 import { defineStore } from 'pinia';
 import { store } from '@/store';
 import { ACCESS_TOKEN, CURRENT_USER } from '../mutation-types';
-import { getUserInfo, login } from '@/api/user';
+import { getUserInfo, login, logout } from '@/api/user';
 import { ResultEnum } from '@/enums/httpEnum';
 
 export const useUserStore = defineStore({
@@ -91,11 +91,16 @@ export const useUserStore = defineStore({
 
     // 登出
     async logout() {
-      this.setPermissions([]);
-      this.setUserInfo('');
-      storage.remove(ACCESS_TOKEN);
-      storage.remove(CURRENT_USER);
-      return Promise.resolve('');
+      try {
+        const response = await logout();
+        this.setPermissions([]);
+        this.setUserInfo('');
+        storage.remove(ACCESS_TOKEN);
+        storage.remove(CURRENT_USER);
+        return Promise.resolve(response);
+      } catch (e) {
+        return Promise.reject(e);
+      }
     },
   },
 });

@@ -20,4 +20,10 @@ public interface SysUserService extends IService<SysUser> {
      * @return 是否成功
      */
     boolean updateStatus(Long id, Integer status);
+
+    /**
+     * 根据用户名查询用户
+     * @param username 用户名
+     */
+    SysUser getUserByUsername(String username);
 }

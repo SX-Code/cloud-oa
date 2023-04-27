@@ -167,7 +167,7 @@ public class CodeGenerate {
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
-        strategy.setInclude("sys_menu", "sys_role_menu");
+        strategy.setInclude("oa_process", "oa_process_record", "oa_process_template", "oa_process_type");
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
         strategy.setEntityLombokModel(true);

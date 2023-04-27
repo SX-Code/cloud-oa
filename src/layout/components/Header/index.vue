@@ -102,12 +102,7 @@
           :options="avatarOptions"
         >
           <div class="avatar">
-            <n-avatar round>
-              {{ username }}
-              <template #icon>
-                <UserOutlined />
-              </template>
-            </n-avatar>
+            <n-avatar round :src="avatar"> </n-avatar>
           </div>
         </n-dropdown>
       </div>
@@ -164,7 +159,7 @@ export default defineComponent({
       getCrumbsSetting,
     } = useProjectSetting();
 
-    const { username } = userStore?.info || {};
+    const { username, avatar } = userStore?.info || {};
 
     const state = reactive({
       username: username || '',
@@ -319,6 +314,7 @@ export default defineComponent({
     return {
       ...toRefs(state),
       iconList,
+      avatar,
       toggleFullScreen,
       doLogout,
       route,

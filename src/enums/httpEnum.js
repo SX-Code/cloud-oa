@@ -5,7 +5,9 @@ export const ResultEnum = {
   SUCCESS: 2000,
   ERROR: -1,
   TIMEOUT: 10042,
-  TOKEN_TIMEOUT: 10041,
+  PERMISSION_ERROR: 1001,
+  TOKEN_UNSUPPORTED: 2006,
+  TOKEN_INVALID: 2005,
   TYPE: 'success',
 };
 

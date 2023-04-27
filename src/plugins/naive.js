@@ -49,6 +49,16 @@ const naive = NaiveUI.create({
     NaiveUI.NSpin,
     NaiveUI.NTree,
     NaiveUI.NAlert,
+    NaiveUI.NSteps,
+    NaiveUI.NStep,
+    NaiveUI.NSelect,
+    NaiveUI.NPopconfirm,
+    NaiveUI.NSkeleton,
+    NaiveUI.NUpload,
+    NaiveUI.NUploadDragger,
+    NaiveUI.NP,
+    NaiveUI.NText,
+    NaiveUI.NTab,
   ],
 });
 export function setupNaive(app) {

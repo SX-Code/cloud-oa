@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@MapperScan("com.swx.auth.mapper")
+@MapperScan(basePackages = {"com.swx.auth.mapper", "com.swx.process.mapper"})
 @EnableTransactionManagement
 @Configuration
 public class MybatisPlusConfig {

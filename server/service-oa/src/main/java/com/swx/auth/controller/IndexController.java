@@ -12,6 +12,7 @@ import com.swx.vo.system.LoginVo;
 import com.swx.vo.system.Permission;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,15 +34,18 @@ public class IndexController {
 
     private final SysUserService sysUserService;
     private final SysMenuService sysMenuService;
+    private final RedisTemplate<String, String> redisTemplate;
 
-    public IndexController(SysUserService sysUserService, SysMenuService sysMenuService) {
+    public IndexController(SysUserService sysUserService, SysMenuService sysMenuService, RedisTemplate<String, String> redisTemplate) {
         this.sysUserService = sysUserService;
         this.sysMenuService = sysMenuService;
+        this.redisTemplate = redisTemplate;
     }
 
     @ApiOperation("login请求，获取Token")
     @PostMapping("login")
     public Map<String, String> login(@RequestBody LoginVo loginVo) {
+        System.out.println("-----------------------不执行我了");
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysUser::getUsername, loginVo.getUsername());
         SysUser sysUser = sysUserService.getOne(wrapper);
@@ -75,15 +79,20 @@ public class IndexController {
         // 获取用户可操作的菜单列表
         SysUser sysUser = sysUserService.getById(userId);
         List<Permission> permissionList = sysMenuService.queryUserAuthListByUserId(userId);
-        sysUser.setPermissions(permissionList);
+        sysUser.setPermissions(new ArrayList<>());
+        sysUser.getPermissions().addAll(permissionList);
         return sysUser;
     }
 
     @ApiOperation("登出")
     @PostMapping("logout")
-    public void logout() {
+    public void logout(HttpServletRequest request) {
         // 删除缓存信息
-        return;
+        String token = request.getHeader("Authorization");
+        String username = JwtHelper.getUsername(token);
+        if (username != null) {
+            redisTemplate.delete(username);
+        }
     }
 
 }

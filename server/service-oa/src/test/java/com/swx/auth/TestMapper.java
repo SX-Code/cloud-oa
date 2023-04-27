@@ -1,5 +1,6 @@
 package com.swx.auth;
 
+import com.swx.ServiceAuthApplication;
 import com.swx.auth.mapper.SysRoleMapper;
 import com.swx.model.system.SysRole;
 import org.junit.Test;
