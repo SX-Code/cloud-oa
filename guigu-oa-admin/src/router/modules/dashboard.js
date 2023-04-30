@@ -22,7 +22,7 @@ const routes = [
     meta: {
       title: 'Dashboard',
       icon: renderIcon(DashboardOutlined),
-      permissions: ['dashboard_console', 'dashboard_workplace'],
+      permissions: ['dashboard_console_list', 'dashboard_workplace_list'],
       sort: 0,
     },
     children: [
@@ -31,7 +31,7 @@ const routes = [
         name: `${routeName}_console`,
         meta: {
           title: '主控台',
-          permissions: ['dashboard_console'],
+          permissions: ['dashboard_console_list'],
           affix: true,
         },
         component: () => import('@/views/dashboard/console/console.vue'),
@@ -42,7 +42,7 @@ const routes = [
         meta: {
           title: '工作台',
           keepAlive: true,
-          permissions: ['dashboard_workplace'],
+          permissions: ['dashboard_workplace_list'],
         },
         component: () => import('@/views/dashboard/workplace/workplace.vue'),
       },

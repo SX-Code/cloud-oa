@@ -25,7 +25,7 @@ export function usePagination(refProps) {
       ...(isBoolean(pagination) ? {} : pagination),
       ...unref(configRef),
       pageCount: unref(configRef)[totalField],
-      itemCount: unref(configRef)[itemCountField],
+      itemCount: unref(configRef)[itemCountField] || 0,
     };
   });
 

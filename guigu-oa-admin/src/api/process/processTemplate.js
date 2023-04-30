@@ -104,3 +104,18 @@ export function deleteProcessDefinition(filename) {
     }
   );
 }
+
+/**
+ * @description: 发布审批模板
+ */
+export function publishProcessTemplate(id) {
+  return http.request(
+    {
+      url: `${prefix}/publish/${id}`,
+      method: 'GET',
+    },
+    {
+      successMessageText: '发布成功',
+    }
+  );
+}

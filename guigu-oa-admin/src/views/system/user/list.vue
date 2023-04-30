@@ -370,7 +370,10 @@ export default defineComponent({
       reloadTable();
     }
 
-    function handleReset() {}
+    function handleReset() {
+      Object.assign(params, defalutParams());
+      reloadTable();
+    }
 
     // 表格
     async function loadDataTable(res) {

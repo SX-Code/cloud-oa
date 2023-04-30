@@ -30,6 +30,44 @@
         </n-space>
       </template>
     </BasicTable>
+    <n-modal v-model:show="formDialogVisible">
+      <n-card
+        style="width: 600px"
+        title="查看审批设置"
+        preset="card"
+        :bordered="false"
+        size="huge"
+      >
+        <h3>基本信息</h3>
+        <n-divider />
+        <n-form
+          :model="templateFormModel"
+          label-placement="left"
+          :show-feedback="false"
+        >
+          <n-form-item label="审批类型">
+            {{ templateFormModel.processTypeName }}
+          </n-form-item>
+          <n-form-item label="名称"> {{ templateFormModel.name }} </n-form-item>
+          <n-form-item label="创建时间">
+            {{ templateFormModel.createTime }}
+          </n-form-item>
+        </n-form>
+        <h3>表单信息</h3>
+        <n-divider />
+        <div>
+          <FormCreate
+            :rule="formCreateData.rule"
+            :option="formCreateData.options"
+          />
+        </div>
+        <template #footer>
+          <div style="display: flex; justify-content: flex-end">
+            <n-button @click="formDialogVisible = false">确定</n-button>
+          </div>
+        </template>
+      </n-card>
+    </n-modal>
   </n-card>
 </template>
 <script>
@@ -42,18 +80,29 @@ export default {
 import {
   pageProcessTemplate,
   removeProcessTemplate,
+  publishProcessTemplate,
 } from '@/api/process/processTemplate';
 import { usePermission } from '@/hooks/web/usePermission';
 import { useDialog } from 'naive-ui';
 import { computed, h, reactive, ref, unref } from 'vue';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@vicons/antd';
+import {
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+} from '@vicons/antd';
+import { PaperPlaneOutline } from '@vicons/ionicons5';
 import { BasicTable, TableAction } from '@/components/Table';
 import { createColumns } from './columns';
 import { useRouter } from 'vue-router';
+import formCreate from '@form-create/naive-ui';
 
+const FormCreate = formCreate.$form();
 const router = useRouter();
 const dialog = useDialog();
 const actionRef = ref();
+const templateFormModel = ref(null);
+const formDialogVisible = ref(false);
 const { hasPermission } = usePermission();
 const currentIndex = ref(1);
 const pagination = reactive({
@@ -70,7 +119,10 @@ const columns = createColumns({
 const hasAddPermision = computed(() => {
   return hasPermission(['process_template_set']);
 });
-
+const formCreateData = reactive({
+  rule: null,
+  options: null,
+});
 // 操作列属性
 const actionColumn = reactive({
   width: 150,
@@ -90,6 +142,13 @@ const actionColumn = reactive({
 function createActions(record) {
   return [
     {
+      label: '查看',
+      type: 'primary',
+      icon: EyeOutlined,
+      onClick: handleView.bind(null, record),
+      auth: ['process_template_list'],
+    },
+    {
       label: '编辑',
       type: 'primary',
       icon: EditOutlined,
@@ -99,6 +158,16 @@ function createActions(record) {
       },
       // 根据权限控制是否显示: 有权限，会显示，支持多个
       auth: ['process_template_update'],
+    },
+    {
+      label: '发布',
+      type: 'success',
+      icon: PaperPlaneOutline,
+      onClick: handlePublish.bind(null, record),
+      ifShow: () => {
+        return record.status === 0;
+      },
+      auth: ['process_template_publish'],
     },
     {
       label: '删除',
@@ -137,8 +206,20 @@ function fetchSuccess() {
 const loadDataTable = async (res) => {
   return await pageProcessTemplate({ ...res });
 };
+// 查看点击事件
+function handleView(record) {
+  formCreateData.rule = JSON.parse(record.formProps);
+  formCreateData.options = JSON.parse(record.formOptions);
+  templateFormModel.value = record;
+  formDialogVisible.value = true;
+}
 // 编辑点击事件
 function handleEdit() {}
+// 发布点击事件
+async function handlePublish(record) {
+  await publishProcessTemplate(record.id);
+  reloadTable();
+}
 // 单行删除
 function handleDelete(record) {
   dialog.info({

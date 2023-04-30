@@ -5,14 +5,14 @@ import { renderIcon } from '@/utils/index';
 
 const routes = [
   {
-    path: '/process',
-    name: routeName,
-    redirect: '/process/type',
+    path: '/processSet',
+    name: `${routeName}Set`,
+    redirect: '/processSet/type',
     component: Layout,
     meta: {
       title: '审批设置',
       icon: renderIcon(SettingOutlined),
-      permissions: ['process_type'],
+      permissions: ['process_type_list', 'process_template_list'],
       sort: 2,
     },
     children: [
@@ -21,7 +21,7 @@ const routes = [
         name: `${routeName}_type`,
         meta: {
           title: '审批类型',
-          permissions: ['process_type'],
+          permissions: ['process_type_list'],
         },
         component: () => import('@/views/process/type/type.vue'),
       },
@@ -30,7 +30,7 @@ const routes = [
         name: `${routeName}_template`,
         meta: {
           title: '审批模板',
-          permissions: ['process_template'],
+          permissions: ['process_template_list'],
         },
         component: () => import('@/views/process/template/template.vue'),
       },

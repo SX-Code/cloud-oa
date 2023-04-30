@@ -1,6 +1,6 @@
 const routeName = 'system';
 import { Layout } from '@/router/constant';
-import { DashboardOutlined } from '@vicons/antd';
+import { WindowsFilled } from '@vicons/antd';
 import { renderIcon } from '@/utils/index';
 
 const routes = [
@@ -11,8 +11,8 @@ const routes = [
     component: Layout,
     meta: {
       title: '系统管理',
-      icon: renderIcon(DashboardOutlined),
-      permissions: ['system_role', 'system_user'],
+      icon: renderIcon(WindowsFilled),
+      permissions: ['system_role_list', 'system_user_list', 'system_menu_list'],
       sort: 1,
     },
     children: [
@@ -21,7 +21,7 @@ const routes = [
         name: `${routeName}_role`,
         meta: {
           title: '角色管理',
-          permissions: ['system_role'],
+          permissions: ['system_role_list'],
         },
         component: () => import('@/views/system/role/list.vue'),
       },
@@ -31,7 +31,7 @@ const routes = [
         meta: {
           title: '用户管理',
           keepAlive: true,
-          permissions: ['system_user'],
+          permissions: ['system_user_list'],
         },
         component: () => import('@/views/system/user/list.vue'),
       },
@@ -41,7 +41,7 @@ const routes = [
         meta: {
           title: '菜单管理',
           keepAlive: true,
-          permissions: ['system_menu'],
+          permissions: ['system_menu_list'],
         },
         component: () => import('@/views/system/menu/menu.vue'),
       },
