@@ -2,4 +2,47 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.swx.process.mapper.ProcessMapper">
 
+    <select id="selectPageVo" resultType="com.swx.vo.process.ProcessVo">
+        SELECT op.id,
+        op.process_code,
+        op.user_id,
+        op.process_template_id,
+        op.process_type_id,
+        op.title,
+        op.description,
+        op.form_values,
+        op.process_instance_id,
+        op.current_auditor,
+        op.`status`,
+        op.create_time,
+        op.update_time,
+        opt.`name` as processTemplateName,
+        opt2.`name` as processTypeName,
+        su.`name`
+        FROM oa_process op
+        LEFT JOIN sys_user su on op.user_id = su.id
+        LEFT JOIN oa_process_template opt on op.process_template_id = opt.id
+        LEFT JOIN oa_process_type opt2 on op.process_type_id = opt2.id
+        <where>
+            <if test="vo.keyword != null and vo.keyword != ''">
+                and (op.process_code like CONCAT('%', #{vo.keyword}, '%')
+                or op.title like CONCAT('%', #{vo.keyword},'%')
+                or su.phone like CONCAT('%', #{vo.keyword}, '%')
+                or su.name like CONCAT('%', #{vo.keyword}, '%'))
+            </if>
+            <if test="vo.userId != null">
+                and op.userId = #{vo.userId}
+            </if>
+            <if test="vo.status != null">
+                and op.status = #{vo.status}
+            </if>
+            <if test="vo.createTimeBegin != null and vo.createTimeBegin != ''">
+                and UNIX_TIMESTAMP(op.create_time)*1000 >= #{vo.createTimeBegin}
+            </if>
+            <if test="vo.createTimeEnd != null and vo.createTimeEnd != ''">
+                and UNIX_TIMESTAMP(op.create_time)*1000 &lt;= #{vo.createTimeEnd}
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
 </mapper>

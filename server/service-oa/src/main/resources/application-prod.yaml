@@ -1,0 +1,49 @@
+server:
+  port: 8800
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-not-delete-value: 0
+      logic-delete-value: 1
+  mapper-locations: classpath:mapper/*.xml
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql:3306/guigu-oa?serverTimezone=GMT%2B8&useSSL=false&characterEncoding=utf-8
+    username: root
+    password: xxxxxxxx
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  swagger2:
+    enabled: true
+
+  redis:
+    host: redis
+    port: 6379
+    database: 0
+    timeout: 1800000
+    password: xxxxxxxx
+    jedis:
+      pool:
+        max-active: 20
+        max-wait: -1
+        max-idle: 5
+        min-idle: 0
+  activiti:
+    database-schema-update: true
+    db-history-used: true
+    history-level: full
+    check-process-definitions: true
+    async-executor-activate: false
+
+wx:
+  mp:
+    app-id: wxxxxxxxxxxxxxxxxx
+    secret: xxxxxxxxxxxxxxxxxxxxxx
+
+wechat:
+  prefix: http://xxxxxx.yyyy.cn

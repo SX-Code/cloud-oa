@@ -14,7 +14,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/guigu-oa?serverTimezone=GMT%2B8&useSSL=false&characterEncoding=utf-8
     username: root
-    password: swx852345
+    password: xxxxxxxx
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
@@ -26,7 +26,7 @@ spring:
     port: 6379
     database: 0
     timeout: 1800000
-    password: swx852345
+    password: xxxxxxxx
     jedis:
       pool:
         max-active: 20
@@ -39,3 +39,11 @@ spring:
     history-level: full
     check-process-definitions: true
     async-executor-activate: false
+
+wx:
+  mp:
+    app-id: wxxxxxxxxxxxxxxxxx
+    secret: xxxxxxxxxxxxxxxxxxxxxx
+
+wechat:
+  prefix: http://xxxxxx.yyyy.cn

@@ -1,0 +1,43 @@
+version: "1"
+
+services:
+  microService:
+    image: service-oa
+    container_name: oa
+    ports:
+      - "8800:8800"
+    volumes:
+      - /compose/microService:/data
+    networks:
+      - oa_net
+    depends_on:
+      - redis
+      - mysql
+  redis:
+    image: redis:7.0.8
+    ports:
+      - "6379:6379"
+    volumes:
+      - /compose/redis/redis.conf:/etc/redis/redis.conf
+      - /compose/redis/data:/data
+    networks:
+      - oa_net
+    command: redis-server /etc/redis/redis.conf
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: 'swx852345'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
+      MYSQL_DATABASE: 'guigu-oa'
+    ports:
+      - "3306:3306"
+    volumes:
+      - /compose/mysql/data:/var/lib/mysql # 挂载数据
+      - /compose/mysql/conf:/etc/mysql/conf.d # 挂载配置文件
+      - /compose/mysql/db:/docker-entrypoint-initdb.d # 挂载配置文件
+      - /compose/mysql/logs:/logs # 挂载日志
+    networks:
+      - oa_net
+    command: --default-authentication-plugin=mysql_native_password # 解决外部无法访问
+networks:
+  oa_net:

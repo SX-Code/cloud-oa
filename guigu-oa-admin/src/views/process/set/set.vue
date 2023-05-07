@@ -92,7 +92,7 @@ function prevStep() {
 }
 
 function back() {
-  router.push('/process/template');
+  router.push('/processSet/template');
 }
 
 function finish() {

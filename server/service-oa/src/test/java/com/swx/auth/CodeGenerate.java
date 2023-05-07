@@ -140,16 +140,18 @@ public class CodeGenerate {
         pc.setParent("com.swx");
         //指定生成文件的绝对路径
         Map<String, String> pathInfo  = new HashMap<>();
+        String packageName = "wechat";
         String parentPath = "/src/main/java/com/swx";
-        String otherPath ="/service-oa/src/main/java/com/swx/auth";
+        String otherPath ="/service-oa/src/main/java/com/swx/" + packageName;
 
-        pc.setEntity("model.system");
-        pc.setMapper("auth.mapper");
-        pc.setService("auth.service");
-        pc.setServiceImpl("auth.service.impl");
-        pc.setController("auth.controller");
+        String entityPackageName = "wechat";
+        pc.setEntity("model." + entityPackageName);
+        pc.setMapper(packageName + ".mapper");
+        pc.setService(packageName + ".service");
+        pc.setServiceImpl(packageName + ".service.impl");
+        pc.setController(packageName + ".controller");
 
-        String entityPath = projectPath.concat("/model").concat(parentPath).concat("/model/system");
+        String entityPath = projectPath.concat("/model").concat(parentPath).concat("/model/" + entityPackageName);
         String mapper_path = projectPath.concat(otherPath).concat("/mapper");
         String mapper_xml_path = projectPath.concat("/service-oa").concat("/src/main/resources/mapper");
         String service_path = projectPath.concat(otherPath).concat("/service");
@@ -167,7 +169,7 @@ public class CodeGenerate {
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
-        strategy.setInclude("oa_process", "oa_process_record", "oa_process_template", "oa_process_type");
+        strategy.setInclude("wechat_menu");
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
         strategy.setEntityLombokModel(true);
@@ -186,7 +188,7 @@ public class CodeGenerate {
         strategy.setVersionFieldName("version");
         strategy.setRestControllerStyle(true);
         strategy.setControllerMappingHyphenStyle(true);
-//        strategy.setTablePrefix("sys_");
+        strategy.setTablePrefix("wechat_");
         mpg.setStrategy(strategy);
 
         mpg.execute();

@@ -60,6 +60,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/favicon.icon", "/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**", "/doc.html");
+        web.ignoring()
+           .antMatchers(
+                   "/favicon.icon", "/swagger-resources/**", "/webjars/**",
+                   "/v2/**", "/swagger-ui.html/**", "/doc.html",
+                   "/admin/wechat/authorize", "/admin/wechat/userInfo", "/admin/wechat/bind");
     }
 }

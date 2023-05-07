@@ -5,6 +5,7 @@ import com.swx.common.jwt.JwtHelper;
 import com.swx.common.pojo.R;
 import com.swx.common.pojo.ResultCode;
 import com.swx.common.utils.ResponseUtil;
+import com.swx.security.custom.LoginUserInfoHelper;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -65,6 +66,9 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         if (!StringUtils.isEmpty(token)) {
             String username = JwtHelper.getUsername(token);
             if (!StringUtils.isEmpty(username)) {
+                // 通过ThreadLocal记录当前登陆人信息
+                LoginUserInfoHelper.setUserId(JwtHelper.getUserId(token));
+                LoginUserInfoHelper.setUsername(username);
                 // 从redis中获取权限数据
                 String authString = redisTemplate.opsForValue().get(username);
                 if (!StringUtils.isEmpty(authString)) {

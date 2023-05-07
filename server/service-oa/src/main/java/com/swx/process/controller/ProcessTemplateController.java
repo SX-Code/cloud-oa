@@ -100,8 +100,9 @@ public class ProcessTemplateController {
     public Map<String, Object> uploadProcessDefinition(@RequestPart("file") MultipartFile file) throws FileNotFoundException {
         String path = new File(ResourceUtils.getURL("classpath:").getPath()).getAbsolutePath();
         String filename = file.getOriginalFilename();
-        String suffix = filename.substring(filename.lastIndexOf("."));
-        String uuidFilename = "activiti_" + UUID.randomUUID().toString();
+        if (filename == null) {
+            throw new BizException("文件名为空");
+        }
         // 上传目录
         File tempFile = new File(path + "/processes/");
         // 判断目录是否存在
@@ -109,7 +110,7 @@ public class ProcessTemplateController {
             tempFile.mkdirs(); // 创建目录
         }
         // 创建空文件用于写入文件
-        File zipFile = new File(path + "/processes/" + uuidFilename + suffix);
+        File zipFile = new File(path + "/processes/"  + filename);
         // 保存文件流到本地
         try {
             file.transferTo(zipFile);
@@ -120,8 +121,8 @@ public class ProcessTemplateController {
 
         Map<String, Object> map = new HashMap<>();
         // 根据上传地址后续部署流程定义，文件名为流程定义的默认key
-        map.put("processDefinitionPath", "processes/" + uuidFilename + suffix);
-        map.put("processDefinitionKey", uuidFilename);
+        map.put("processDefinitionPath", "processes/" + filename);
+        map.put("processDefinitionKey", filename.substring(0, filename.lastIndexOf(".")));
         return map;
     }
 
@@ -138,6 +139,12 @@ public class ProcessTemplateController {
         } else {
             throw new BizException("文件不存在");
         }
+    }
+
+    @ApiOperation("发布")
+    @GetMapping("/publish/{id}")
+    public void publish(@PathVariable Long id) {
+        processTemplateService.publish(id);
     }
 
 }

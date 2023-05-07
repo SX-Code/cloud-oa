@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ProcessRecordService extends IService<ProcessRecord> {
 
+    public void record(Long processId, Integer status, String description);
 }

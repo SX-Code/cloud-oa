@@ -153,7 +153,7 @@ export default defineComponent({
     const columnsList = ref([]);
     const cacheColumnList = ref([]);
     const state = reactive({
-      selection: true,
+      selection: false,
       checkAll: true,
       checkList: [],
       defaultCheckList: [],
@@ -172,6 +172,9 @@ export default defineComponent({
       const checkList = columns.map((item) => item.key);
       state.checkList = checkList;
       state.defaultCheckList = checkList;
+      if (columns[0]['type'] === 'selection') {
+        state.selection = true;
+      }
       // 操作列不能拖动
       const newColumns = columns.filter(
         (item) => item.key != 'action' && item.title != '操作'

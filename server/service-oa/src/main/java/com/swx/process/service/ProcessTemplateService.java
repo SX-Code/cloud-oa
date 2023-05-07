@@ -20,4 +20,10 @@ public interface ProcessTemplateService extends IService<ProcessTemplate> {
      * @param pageParam 分页信息
      */
     IPage<ProcessTemplate> pageWithTypeName(CustomPage<ProcessTemplate> pageParam);
+
+    /**
+     * 模板发布
+     * @param id 模板ID
+     */
+    void publish(Long id);
 }

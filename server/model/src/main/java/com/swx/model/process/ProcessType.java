@@ -1,11 +1,14 @@
 package com.swx.model.process;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.swx.model.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 /**
  * <p>
@@ -28,6 +31,9 @@ public class ProcessType extends BaseEntity {
 
     @ApiModelProperty(value = "审批描述")
     private String description;
+
+    @TableField(exist = false)
+    private List<ProcessTemplate> processTemplateList;
 
 
 }

@@ -37,4 +37,11 @@ public class JwtHelper {
         return (String) body.get("username");
     }
 
+    public static void main(String[] args) {
+        String token = createToken(1L, "admin");
+        // String token = createToken(2L, "wjl");
+//        String token = createToken(3L, "lrsjl");
+        System.out.println(token);
+    }
+
 }

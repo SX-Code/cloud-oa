@@ -188,7 +188,7 @@ function createActions(record) {
 
 // 跳转到模板添加页面
 function setProcessTemplate() {
-  router.push('/process/set');
+  router.push('/processSet/set');
 }
 
 /**
