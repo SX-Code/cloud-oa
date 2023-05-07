@@ -22,11 +22,12 @@ services:
       - /compose/redis/data:/data
     networks:
       - oa_net
-    command: redis-server /etc/redis/redis.conf
+    command: /bin/sh -c "redis-server /etc/redis/redis.conf"
+    privileged: true
   mysql:
     image: mysql:8
     environment:
-      MYSQL_ROOT_PASSWORD: 'swx852345'
+      MYSQL_ROOT_PASSWORD: 'xxxxxx'
       MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
       MYSQL_DATABASE: 'guigu-oa'
     ports:
