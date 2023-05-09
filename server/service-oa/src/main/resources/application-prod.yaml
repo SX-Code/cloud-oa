@@ -34,7 +34,7 @@ spring:
         max-idle: 5
         min-idle: 0
   activiti:
-    database-schema-update: true
+    database-schema-update: false
     db-history-used: true
     history-level: full
     check-process-definitions: true

@@ -21,6 +21,7 @@ import com.swx.vo.process.ProcessFormVo;
 import com.swx.vo.process.ProcessQueryVo;
 import com.swx.vo.process.ProcessVo;
 import com.swx.vo.system.page.CustomPage;
+import com.swx.wechat.service.MessageService;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.FlowNode;
@@ -65,6 +66,9 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
     private final TaskService taskService;
     private final ProcessRecordService processRecordService;
     private final HistoryService historyService;
+
+    @Autowired
+    private MessageService messageService;
 
     public ProcessServiceImpl(RepositoryService repositoryService, SysUserService sysUserService, RuntimeService runtimeService, TaskService taskService, ProcessRecordService processRecordService, HistoryService historyService) {
         this.repositoryService = repositoryService;
@@ -126,7 +130,8 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
         String names = taskList.stream().map(task -> {
             String assignee = task.getAssignee();
             SysUser user = sysUserService.getUserByUsername(assignee);
-            // TODO 推送消息
+            // 推送消息
+            messageService.pushPendingMessage(process, user, task.getId());
             return user.getName();
         }).collect(Collectors.joining(","));
         // 业务流程关联
@@ -257,6 +262,7 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
     public void approve(ApprovalVo approvalVo) {
         // 获取流程变量
         String taskId = approvalVo.getTaskId();
+        Process process = baseMapper.selectById(approvalVo.getProcessId());
         Map<String, Object> variables = taskService.getVariables(taskId);
         if (approvalVo.getStatus() == 1) {
             // 审批通过
@@ -265,17 +271,19 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
             // 驳回
             this.endTask(taskId);
         }
+        // 推送给发起人
+        messageService.pushProcessedMessage(process, approvalVo.getStatus());
         // 记录审批过程信息
         String description = approvalVo.getStatus() == 1 ? "已通过" : "已拒绝";
         processRecordService.record(approvalVo.getProcessId(), approvalVo.getStatus(), description);
         // 查询下一个审批人
-        Process process = baseMapper.selectById(approvalVo.getProcessId());
         List<Task> taskList = this.getCurrentTaskList(process.getProcessInstanceId());
         if (!CollectionUtils.isEmpty(taskList)) {
             String names = taskList.stream().map(task -> {
                 String assignee = task.getAssignee();
                 SysUser user = sysUserService.getUserByUsername(assignee);
-                // TODO 推送消息
+                // 推送消息
+                messageService.pushPendingMessage(process, user, task.getId());
                 return user.getName();
             }).collect(Collectors.joining(","));
             process.setDescription("等待" + names + "审批");

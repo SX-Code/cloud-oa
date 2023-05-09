@@ -71,7 +71,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
             button.put("name", menu.getName());
             if (CollectionUtils.isEmpty(menu.getChildren())) {
                 button.put("type", menu.getType());
-                button.put("url", prefix + "/oa/#" + menu.getUrl());
+                button.put("url", prefix + menu.getUrl());
             } else {
                 JSONArray subButton = new JSONArray();
                 for (Menu child : menu.getChildren()) {
@@ -84,7 +84,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
                         view.put("key", child.getMeunKey());
                     } else {
                         // 网页或者小程序类型
-                        view.put("url", prefix + "/oa/#" + child.getUrl());
+                        view.put("url", prefix + child.getUrl());
                     }
                     subButton.add(view);
                 }

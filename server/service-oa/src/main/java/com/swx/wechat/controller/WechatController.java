@@ -45,7 +45,6 @@ public class WechatController {
     public Map<String, String> authorize(@RequestParam("redirect_url") String returnUrl) {
         // 授权回调成功后，要返回原地址路径，原地址路径带"#"号，当returnUrl获取带“#”的url时，获取不全。
         // 前端把“#”替换成了“guiguoa”，这里替换回来
-        System.out.println(URLDecoder.decode(returnUrl));
         String redirectURL = wxMpService.getOAuth2Service()
                 .buildAuthorizationUrl(URLDecoder.decode(returnUrl),
                         WxConsts.OAuth2Scope.SNSAPI_USERINFO,
