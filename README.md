@@ -10,8 +10,14 @@
 **[文档](https://sx-code.github.io/wiki/cloudoa/02_install/source_install.html) | [预览]()**
 
 ## Git代码
+``` bash
 git clone https://github.com/SX-Code/naive-ui-admin-js.git
+```
 
+## 界面展示
+![管理端](https://cdn.staticaly.com/gh/sx-code/tuchuang@master/cloudoa/guigu-oa-admin.png)
+
+![员工端](https://cdn.staticaly.com/gh/sx-code/tuchuang@master/cloudoa/guigu-oa-web.png)
 ## 目录说明
 
 ```bash
