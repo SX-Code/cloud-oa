@@ -34,8 +34,8 @@
 ├── guigu-oa-admin # 管理端
 ├── guigu-oa-web # 员工端
 ├── server # 后端服务
-├── Dockerfile # 后端docerfile
-└── docker-compose.yaml # 后端docker部署
+├── guigu-oa.sql # 数据库文件
+└── docker-compose.yaml # Docker部署
 ```
 
 ## 管理端项目初始化
