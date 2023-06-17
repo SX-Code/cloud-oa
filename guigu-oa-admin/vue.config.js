@@ -2,7 +2,7 @@ const { defineConfig } = require("@vue/cli-service");
 module.exports = defineConfig({
   transpileDependencies: true,
   // 基本路径
-  publicPath: '/',
+  publicPath: process.env.VUE_APP_BASE_URL,
   outputDir: 'dist',
   // 开发环境配置
   devServer: {

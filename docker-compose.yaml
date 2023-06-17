@@ -13,6 +13,13 @@ services:
     depends_on:
       - redis
       - mysql
+  web:
+    image: web-oa
+    container_name: web
+    ports:
+      - "82:80"
+    networks:
+      - oa_net
   redis:
     image: redis:7.0.8
     ports:

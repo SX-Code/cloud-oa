@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkguigu_oa_admin"]=self["webpackChunkguigu_oa_admin"]||[]).push([[940],{22940:function(n,u,a){a.r(u),a.d(u,{default:function(){return o}});var e=a(73396);const r=(0,e._)("h1",null,"工作台",-1),t=[r];function i(n,u,a,r,i,c){return(0,e.wg)(),(0,e.iD)("div",null,t)}var c=(0,e.aZ)({setup(){}}),s=a(40089);const l=(0,s.Z)(c,[["render",i]]);var o=l}}]);
+//# sourceMappingURL=940.6161b2bf.js.map

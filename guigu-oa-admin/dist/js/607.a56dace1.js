@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkguigu_oa_admin"]=self["webpackChunkguigu_oa_admin"]||[]).push([[607],{20607:function(u,n,a){a.r(n),a.d(n,{default:function(){return f}});var t=a(73396);const e={class:"about"},i=(0,t._)("h1",null,"This is an about page",-1),s=[i];function r(u,n,a,i,r,c){return(0,t.wg)(),(0,t.iD)("div",e,s)}var c=(0,t.aZ)({setup(){}}),o=a(40089);const d=(0,o.Z)(c,[["render",r]]);var f=d}}]);
+//# sourceMappingURL=607.a56dace1.js.map
