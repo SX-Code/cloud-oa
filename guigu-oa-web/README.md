@@ -1,24 +1,20 @@
-# guigu-oa-web
-
-## Project setup
+# 员工端项目启动
 ```
+cd guigu-oa-web
 npm install
 ```
 
-### Compiles and hot-reloads for development
+## 开发环境
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+## 生产环境
 ```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
+npm run build:prod
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## 代码格式化
+```
+npm run lint-fix
+```
