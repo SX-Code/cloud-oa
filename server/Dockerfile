@@ -1,6 +1,6 @@
-FROM java:8
+FROM openjdk:8
 ADD service-oa.jar service-oa.jar
-RUN bash -c 'touch /service-oa.jar'
+RUN echo "Asia/Shanghai" > /etc/timezone
 EXPOSE 8800
 ENTRYPOINT ["java", "-jar", "/service-oa.jar"]
-MAINTAINER sw-code
+LABEL maintainer="sw-code"
