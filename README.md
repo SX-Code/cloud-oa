@@ -23,9 +23,8 @@
 开发工具：IntelliJ IDEA、Visual Studio Code
 
 ## 项目展示
-
-<img src="https://cdn.staticaly.com/gh/sx-code/tuchuang@master/cloudoa/guigu-oa-admin.png" />
-<img src="https://cdn.staticaly.com/gh/sx-code/tuchuang@master/cloudoa/guigu-oa-web.png" />
+<img src="https://gcore.jsdelivr.net/gh/sx-code/tuchuang@main/cloudoa/guigu-oa-admin.png" />
+<img src="https://gcore.jsdelivr.net/gh/sx-code/tuchuang@master/cloudoa/guigu-oa-web.png" />
 
 ## 目录说明
 
