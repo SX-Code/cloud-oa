@@ -30,7 +30,7 @@ public class SysUser extends BaseEntity {
     private String username;
 
     @ApiModelProperty(value = "密码")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @ApiModelProperty(value = "姓名")
